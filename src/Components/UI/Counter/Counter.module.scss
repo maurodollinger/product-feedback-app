@@ -1,0 +1,52 @@
+@import '../../../scss/variables.scss';
+
+.counter{
+    display: inline-flex;
+    border-radius: 0.625rem;
+    background: #F2F4FE;
+    width: 2.5rem;
+    height: 3.3125rem;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.1s ease-in;
+    span{
+        color: #3A4374;
+        text-align: center;
+        font-size: 0.8125rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: -0.01131rem;
+        height: 1.1875rem;
+        margin-bottom: 0.5rem;
+    }
+    &:hover{
+        background: #CFD7FF;
+    }
+    &.disabled{
+        background: #4661E6;
+        cursor:not-allowed;
+        span{
+            color:white;
+        }
+        path{
+            stroke: white;
+        }
+    }
+    @media screen and (max-width:$mobile-width-double) {
+        flex-direction: row;
+        width: 4.3125rem;
+        height: 2rem;
+        justify-content: center;
+        gap:0.5rem;
+        >div{
+            margin-bottom: 0.2rem;
+        }
+        span{
+            margin-bottom: 0;
+        }
+    }
+}

@@ -1,0 +1,40 @@
+.button{
+    border-radius: 0.625rem;
+    color: #F2F4FE;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border: 0;
+    max-width: 9.875rem;
+    width: 100%;
+    height: 2.75rem;
+    padding-top: 0.81rem;
+    padding-bottom: 0.69rem;
+    cursor: pointer;
+    transition: background 0.1s ease-in;
+    &.typeOne{
+        background: #AD1FEA;
+        &:hover{
+            background: #C75AF6;
+        }
+    }
+    &.typeTwo{
+        background: #4661E6;
+        &:hover{
+            background: #7C91F9;
+        }
+    }
+    &.typeThree{
+        background: #3A4374;
+        &:hover{
+            background: #656EA3;
+        }
+    }
+    &.typeFour{
+        background: #D73737;
+        &:hover{
+            background: #E98888;
+        }
+    }
+}

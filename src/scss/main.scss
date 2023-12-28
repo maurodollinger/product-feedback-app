@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&display=swap');
+@import './variables.scss';
+
+body{
+    font-family: 'Jost', sans-serif;
+    background-color:#F7F8FD;;
+}
+
+h1, h2, h3, h4{
+    color: #3A4374;
+    line-height: normal;
+    font-style: normal;
+    font-weight: 700;
+}
+
+h1{    
+    font-size: 1.5rem;
+    letter-spacing: -0.02081rem;
+}
+
+h2{
+    font-size: 1.25rem;
+    letter-spacing: -0.01563rem;
+    @media screen and (max-width:$mobile-width) {
+        font-size: 0.8125rem;
+    }
+}
+
+h3{
+    font-size: 1.125rem;
+    letter-spacing: -0.01563rem;
+}
+
+h4{
+    font-size: 0.875rem;
+    letter-spacing: -0.01213rem;
+}
+
+.p1,.p2,.p3{
+    color: #3A4374;
+    font-family: Jost;
+    line-height: normal;
+    font-style: normal;
+}
+
+.p1{   
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.p2{
+    font-size: 0.9375rem;
+    font-weight: 400;
+    @media screen and (max-width:$mobile-width) {
+        font-size: 0.8125rem;
+    }
+}
+
+.p3{
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.p4{
+    color: #647196;
+    font-family: Jost;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+}
+
+.tag{
+    border-radius: 0.625rem;
+    background: #F2F4FF;
+    padding: 0.31rem 1rem 0.38rem;
+    color: #4661E6;
+    font-size: 0.8125rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-transform: capitalize;
+    display: inline-block;
+    transition: background 0.1s ease-in;
+    &.h:hover:not(.tagSelected){
+        background: #CFD7FF;
+    }
+    &.tagSelected{
+        background: #4661E6;
+        color: #FFF;
+    }
+}
+
+.menu-icon {
+    cursor: pointer;
+
+    .top-rect,.middle-rect,.bottom-rect{
+        transition: transform 0.3s ease-in-out, opacity 0.1s ease;
+    }
+    
+
+    &.active {
+        .top-rect {
+            transform: rotate(45deg) translate(-3px, 0) ;
+            transform-origin: left;
+        }
+
+        .middle-rect {
+        opacity: 0;
+        }
+
+        .bottom-rect {
+            transform: rotate(-45deg) translate(-3px, 0px);
+            transform-origin: left;
+        }
+    }
+}
+

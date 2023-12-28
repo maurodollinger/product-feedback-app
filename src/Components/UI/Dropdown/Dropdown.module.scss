@@ -1,0 +1,43 @@
+@import '../../../scss/animations.scss';
+@import '../../../scss/variables.scss';
+
+.dropdown{
+    position: absolute;
+    margin-top:1rem;
+    list-style-type: none;
+    border-radius: 0.625rem;
+    box-shadow: 0px 10px 40px -7px rgba(55, 63, 104, 0.35);
+    min-width: 15.9375rem;
+    background: #FFF;
+    animation: fadeIn 0.1s ease-in-out;
+    z-index: 1;
+    @media screen and (max-width:$mobile-width-double) {
+        min-width: none;
+        width: calc(100vw - 3rem);
+    }
+    li{
+        color: #647196;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        padding: 0.75rem 1.5rem;
+        border-bottom: 0.0625rem solid rgba(58, 67, 116, 0.15);
+        transition: color 0.1s ease-in;
+        &:hover{
+            color: #AD1FEA;
+        }
+        &:last-child{
+            border-bottom: none;
+        }
+        display: flex;
+        align-items: center;
+        svg{
+            margin-left: auto;
+            path{
+                stroke-width: 2px;
+                stroke: #AD1FEA;
+            }
+        }
+    }
+}

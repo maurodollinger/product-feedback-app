@@ -1,0 +1,19 @@
+.goBackButton{
+    display: inline-flex;
+    height: 1.25rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.97913rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    color: #647196;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    &:hover{
+        text-decoration-line: underline;
+    }
+}
