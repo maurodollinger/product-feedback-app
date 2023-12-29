@@ -8,6 +8,7 @@ import data from './mockup/data-with-ids.json';
 import { SuggestionsContextProvider } from './store/SuggestionsContext';
 import FeedbackDetail from './Components/FeedbackDetail/FeedbackDetail';
 import './scss/main.scss';
+import AddFeedback from './Components/AddFeedback/AddFeedback';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path='/product-feedback-app' index element={<Suggestions />} />
           <Route path='/product-feedback-app/roadmap' element={<Roadmap/>}/>
           <Route path='/product-feedback-app/feedbackdetail/:id' element={<FeedbackDetail/>}/>
+          <Route path='/product-feedback-app/addfeedback' element={<AddFeedback/>}/>
         </Route>
       </Routes>
     </Fragment>
@@ -26,7 +28,7 @@ function App() {
 function Layout(){
   return (
     <section>
-      <SuggestionsContextProvider currentUser={data.currentUser} productRequests={data.productRequests}>
+      <SuggestionsContextProvider currentUser={data.currentUser} suggestions={data.productRequests}>
         <Outlet />
       </SuggestionsContextProvider>
     </section>

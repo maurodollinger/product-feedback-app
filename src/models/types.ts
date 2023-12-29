@@ -13,7 +13,7 @@ interface Comment {
   replies?:Comment[];
 }
 
-interface ProductRequest {
+interface Suggestions {
   id: number;
   title: string;
   category: string;
@@ -26,16 +26,18 @@ interface ProductRequest {
 interface SuggestionsContextProviderProps {
   children: React.ReactNode;
   currentUser: User;
-  productRequests: ProductRequest[];
+  suggestions: Suggestions[];
 }
 
 interface SuggestionsContextProps {
   currentUser: User;
-  productRequests: ProductRequest[];
+  suggestions: Suggestions[];
+  originalSuggestions: Suggestions[];
   updateByLeastUpvotes:()=>any;
   updateByMostUpvotes:()=>any;
   updateByLeastComments:()=>any;
   updateByMostComments:()=>any;
+  filterByCategory:(category:string)=>any;
 }
 
 interface DropdownItem {
@@ -44,4 +46,26 @@ interface DropdownItem {
   selected: boolean;
 }
 
-export type { User, Comment, ProductRequest, SuggestionsContextProviderProps, SuggestionsContextProps, DropdownItem };
+interface SuggestionReducerProps {
+  suggestions:Suggestions[];
+  originalSuggestions:Suggestions[];
+  currentSort:string;
+}
+
+export enum SortOptions {
+  MostUpvotes = 'Most Upvotes',
+  LeastUpvotes = 'Least Upvotes',
+  MostComments = 'Most Comments',
+  LeastComments = 'Least Comments',
+}
+
+export enum FilterOptions{
+  All = 'All',
+  UI = 'UI',
+  UX = 'UX',
+  Enhancement = 'Enhancement',
+  Bug = 'Bug',
+  Feature = 'Feature'
+}
+
+export type { User, Comment, Suggestions, SuggestionsContextProviderProps, SuggestionsContextProps, DropdownItem, SuggestionReducerProps};

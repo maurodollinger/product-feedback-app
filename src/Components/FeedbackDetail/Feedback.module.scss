@@ -1,24 +1,31 @@
-.feedbackComment{
-    padding: 1.75rem 0 2rem 0;
-    .container{
+@import '../../scss/variables.scss';
 
-    display: flex;   
-        >div:first-child{
-            img{
+.feedbackComment {
+    padding: 1.75rem 0 2rem 0;
+
+    .container {
+
+        display: flex;
+
+        >div:first-child {
+            img {
                 width: 2.5rem;
                 height: 2.5rem;
                 border-radius: 2.5rem;
                 margin-right: 2rem;
             }
-         }
-         >.commentContain{
+        }
+
+        >.commentContain {
             width: 100%;
-            >div{
+
+            >div {
                 width: 100%;
                 position: relative;
                 margin-bottom: 1.06rem;
             }
-            button{
+
+            button {
                 position: absolute;
                 right: 0;
                 top: 0;
@@ -30,72 +37,81 @@
                 font-weight: 600;
                 line-height: normal;
                 cursor: pointer;
-                &:hover{
+
+                &:hover {
                     text-decoration-line: underline;
                 }
             }
-            p{
+
+            p {
                 color: #647196;
             }
-            .replyingTo{
+
+            .replyingTo {
                 color: #AD1FEA;
                 font-weight: 700;
             }
-         }
+        }
     }
-   
-    
-   }
 
-   @import '../../scss/variables.scss';
 
-   .feedbackDetailContainer{
-       max-width: 45.625rem;
-       margin: 0 auto;
-       > div:first-child{
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           margin-bottom: 1.5rem;
-       }
-       @media screen and (min-width:$min-desktop-width) {
-           margin-top:5.88rem;
-           margin-bottom:5.88rem;
-       }
-   }
-   
-   .comments{
-       margin-top: 1.5rem;
-       margin-bottom: 1.5rem;
-       padding: 1.5rem 2rem;
-   }
-   
-   .addComment{
-       padding: 1.5rem 2rem;
-   
-       >div{
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-       }
-   }
+}
 
-   .repliesContainer{
+
+.feedbackDetailContainer {
+    max-width: 45.625rem;
+    margin: 0 auto;
+
+    >div:first-child {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    @media screen and (min-width:$min-desktop-width) {
+        margin-top: 5.88rem;
+        margin-bottom: 5.88rem;
+    }
+}
+
+.comments {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 2rem;
+}
+
+.addComment {
+    margin-top: 1.5rem;
+    padding: 1.5rem 2rem;
+
+    >div {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.repliesContainer {
     display: flex;
     overflow: hidden;
-    .leftSide{
+
+    .leftSide {
         min-width: 2.8rem;
         display: flex;
         justify-content: center;
-        span{
+
+        span {
             display: inline-block;
-            width:  0.0625rem;
+            width: 0.0625rem;
             height: 70%;
             background: rgba(100, 113, 150, .1);
             position: absolute;
             top: 5.8rem;
         }
-        div{
+
+        div {
             background: white;
             width: 100%;
             z-index: 1;
@@ -103,27 +119,32 @@
             display: flex;
             align-self: flex-end;
         }
-    }        
-    .rightSide{
+    }
+
+    .rightSide {
         width: 100%;
-        >div{
+
+        >div {
             border: 0;
         }
     }
-    
+
 }
-.feedbackCommentContainer{
+
+.feedbackCommentContainer {
     position: relative;
 }
-.borderBottom{
+
+.borderBottom {
     border-bottom: 0.0625rem rgba(140, 146, 179, 0.25) solid;
 }
 
-.replyComment{
+.replyComment {
     display: flex;
-    gap:1rem;
+    gap: 1rem;
     margin-left: 4.5rem;
-    button{
+
+    button {
         max-width: 7.3125rem;
         margin-top: 1.5rem;
     }

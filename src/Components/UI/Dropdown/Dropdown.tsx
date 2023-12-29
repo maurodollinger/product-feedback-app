@@ -5,7 +5,7 @@ import { ReactComponent as IconCheck } from '../../../assets/shared/icon-check.s
 
 type Props = {
     items:DropdownItem[],
-    clickOnItem: (updatedList: DropdownItem[], id:number) => void;
+    clickOnItem?: (updatedList: DropdownItem[], id:number) => void;
 }
 
 const Dropdown: React.FC<Props> = ({items, clickOnItem}) =>{
@@ -15,7 +15,7 @@ const Dropdown: React.FC<Props> = ({items, clickOnItem}) =>{
       item.id === id ? { ...item, selected: true } : { ...item, selected: false }
     );
 
-    clickOnItem(updatedList, id);
+    if(clickOnItem) clickOnItem(updatedList, id);
   };
   
   return(

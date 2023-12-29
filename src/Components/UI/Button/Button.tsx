@@ -3,12 +3,14 @@ import styles from './Button.module.scss';
 
 type Props = {
     children:React.ReactNode,
-    type:number
+    buttonType:number,
+    onClick?:()=>void,
+    type?: 'button' | 'submit' | 'reset';
 }
 
-const Button:React.FC<Props> = ({children,type}) =>{
+const Button:React.FC<Props> = ({children,buttonType, type = 'button',onClick}) =>{
   let classType ;
-  switch(type){
+  switch(buttonType){
   case 1:
     classType = styles.typeOne;
     break;
@@ -23,7 +25,7 @@ const Button:React.FC<Props> = ({children,type}) =>{
     break;
   }
   return(
-    <button className={`${styles.button} ${classType}`}>
+    <button className={`${styles.button} ${classType}`} onClick={onClick} type={type}>
       {children}
     </button>
   );

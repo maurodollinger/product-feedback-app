@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { ProductRequest, SuggestionsContextProps, SuggestionsContextProviderProps } from '../models/types';
+import { FilterOptions, SuggestionReducerProps, Suggestions, SuggestionsContextProps, SuggestionsContextProviderProps } from '../models/types';
 
 const initialUserContextValues: SuggestionsContextProps = {
   currentUser: {
@@ -7,36 +7,58 @@ const initialUserContextValues: SuggestionsContextProps = {
     name: '',
     username: '',
   },
-  productRequests: [],
+  suggestions: [],
+  originalSuggestions:[],
   updateByLeastUpvotes:()=>{/**/},
   updateByMostUpvotes:()=>{/**/},
   updateByLeastComments:()=>{/**/},
   updateByMostComments:() =>{/**/},
+  filterByCategory:()=>{/**/}
 };
 
 export const SuggestionsContext = React.createContext<SuggestionsContextProps>(initialUserContextValues);
 
+const ActionTypes = {
+  UPDATE_LEAST_UPVOTES: 'UPDATE_LEAST_UPVOTES',
+  UPDATE_MOST_UPVOTES: 'UPDATE_MOST_UPVOTES',
+  UPDATE_LEAST_COMMENTS: 'UPDATE_LEAST_COMMENTS',
+  UPDATE_MOST_COMMENTS: 'UPDATE_MOST_COMMENTS',
+  FILTER_BY_CATEGORY: 'FILTER_BY_CATEGORY',
+};
+
 type Action =
-  | { type: 'UPDATE_LEAST_UPVOTES';}
-  | { type: 'UPDATE_MOST_UPVOTES'; }
-  | { type: 'UPDATE_LEAST_COMMENTS';}
-  | { type: 'UPDATE_MOST_COMMENTS'; };
+  | { type: typeof ActionTypes.UPDATE_LEAST_UPVOTES ; category?: string}
+  | { type: typeof ActionTypes.UPDATE_MOST_UPVOTES ; category?: string}
+  | { type: typeof ActionTypes.UPDATE_LEAST_COMMENTS ; category?: string}
+  | { type: typeof ActionTypes.UPDATE_MOST_COMMENTS ; category?: string}
+  | { type: typeof ActionTypes.FILTER_BY_CATEGORY; category: string };
+
   
-const suggestionsReducer = (state:ProductRequest[],action:Action) => {
-  let sortedSuggestions;
+const sortByUpvotes = (items: Suggestions[], ascending: boolean) =>
+  [...items].sort((a, b) => (ascending ? a.upvotes - b.upvotes : b.upvotes - a.upvotes));
+
+const sortByCommentsLength = (items: Suggestions[], ascending: boolean) =>
+  [...items].sort((a, b) => (ascending ? (a.comments?.length ?? 0) - (b.comments?.length ?? 0) : (b.comments?.length ?? 0) - (a.comments?.length ?? 0)));
+
+const filterByCategory = (items: Suggestions[], category: string) =>
+  category === FilterOptions.All.toLowerCase() ? items : items.filter((item) => item.category.toLowerCase() === category.toLowerCase());
+
+const suggestionsReducer = (state:SuggestionReducerProps,action:Action) => {
+  const { suggestions, originalSuggestions, currentSort } = state;
+  const category = (action.category!==undefined) ? action.category : '';
+
   switch (action.type) {
-  case 'UPDATE_LEAST_UPVOTES':
-    sortedSuggestions = [...state].sort((a, b) => a.upvotes - b.upvotes);
-    return sortedSuggestions;
-  case 'UPDATE_MOST_UPVOTES':
-    sortedSuggestions = [...state].sort((a, b) => b.upvotes - a.upvotes);
-    return sortedSuggestions;
-  case 'UPDATE_LEAST_COMMENTS':
-    sortedSuggestions = [...state].sort((a, b) => (a.comments?.length ?? 0) - (b.comments?.length ?? 0));
-    return sortedSuggestions;
-  case 'UPDATE_MOST_COMMENTS':
-    sortedSuggestions = [...state].sort((a, b) => (b.comments?.length ?? 0) - (a.comments?.length ?? 0));
-    return sortedSuggestions;
+  case ActionTypes.UPDATE_LEAST_UPVOTES:
+    return { suggestions: sortByUpvotes(suggestions, true), originalSuggestions, currentSort: ActionTypes.UPDATE_LEAST_UPVOTES};
+  case ActionTypes.UPDATE_MOST_UPVOTES:
+    return { suggestions: sortByUpvotes(suggestions, false), originalSuggestions, currentSort: ActionTypes.UPDATE_MOST_UPVOTES};
+  case ActionTypes.UPDATE_LEAST_COMMENTS:
+    return { suggestions: sortByCommentsLength(suggestions, true), originalSuggestions, currentSort: ActionTypes.UPDATE_LEAST_COMMENTS};
+  case ActionTypes.UPDATE_MOST_COMMENTS:
+    return { suggestions: sortByCommentsLength(suggestions, false), originalSuggestions, currentSort: ActionTypes.UPDATE_MOST_COMMENTS};
+  case ActionTypes.FILTER_BY_CATEGORY:
+    return { suggestions: filterByCategory(originalSuggestions, category), originalSuggestions, currentSort};
+
   default:
     return state;
   }
@@ -44,32 +66,45 @@ const suggestionsReducer = (state:ProductRequest[],action:Action) => {
 
 export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps> = (props) =>{
 
-  const [suggestionsState, dispatchSuggestionsAction] = useReducer(suggestionsReducer,props.productRequests);
-
+  const [suggestionsState, dispatchSuggestionsAction] = useReducer(
+    suggestionsReducer as React.Reducer<SuggestionReducerProps, Action>,
+    {
+      suggestions: props.suggestions,
+      originalSuggestions: props.suggestions,
+      currentSort:ActionTypes.UPDATE_MOST_UPVOTES
+    }
+  );  
 
   const updateByLeastUpvotes = () =>{
-    dispatchSuggestionsAction({type: 'UPDATE_LEAST_UPVOTES'});
+    dispatchSuggestionsAction({ type: ActionTypes.UPDATE_LEAST_UPVOTES });
   };  
 
   const updateByMostUpvotes = () =>{
-    dispatchSuggestionsAction({type: 'UPDATE_MOST_UPVOTES'});
+    dispatchSuggestionsAction({ type: ActionTypes.UPDATE_MOST_UPVOTES });
   };  
 
   const updateByLeastComments = () =>{
-    dispatchSuggestionsAction({type:'UPDATE_LEAST_COMMENTS'});
+    dispatchSuggestionsAction({ type: ActionTypes.UPDATE_LEAST_COMMENTS });
   };
 
   const updateByMostComments = () =>{
-    dispatchSuggestionsAction({type:'UPDATE_MOST_COMMENTS'});
+    dispatchSuggestionsAction({ type: ActionTypes.UPDATE_MOST_COMMENTS });
+  };
+
+  const filterByCategory = (category:string) =>{
+    dispatchSuggestionsAction({ type:ActionTypes.FILTER_BY_CATEGORY,category});
+    dispatchSuggestionsAction({ type:suggestionsState.currentSort} );
   };
 
   const suggestionsCtx = {
     currentUser:props.currentUser,
-    productRequests:suggestionsState,
+    suggestions:suggestionsState.suggestions,
+    originalSuggestions:suggestionsState.originalSuggestions,
     updateByLeastUpvotes,
     updateByMostUpvotes,
     updateByLeastComments,
-    updateByMostComments
+    updateByMostComments,
+    filterByCategory,
   };
 
   return(

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import Card from '../UI/Card/Card';
 import Counter from '../UI/Counter/Counter';
-import { ProductRequest } from '../../models/types';
+import { Suggestions } from '../../models/types';
 import styles from './Suggestion.module.scss';
 import { ReactComponent as IconComments } from '../../assets/shared/icon-comments.svg';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
-  request:ProductRequest
+  request:Suggestions
 };
 
 const SuggestionItem:React.FC<Props> = ({request}) =>{

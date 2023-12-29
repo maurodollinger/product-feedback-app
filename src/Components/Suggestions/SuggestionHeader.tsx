@@ -6,23 +6,25 @@ import { ReactComponent as PlusIcon } from '../../assets/shared/icon-plus.svg';
 import { ReactComponent as ArrowUp } from '../../assets/shared/icon-arrow-up.svg';
 import { ReactComponent as ArrowDown } from '../../assets/shared/icon-arrow-down.svg';
 import Dropdown from '../UI/Dropdown/Dropdown';
-import { DropdownItem } from '../../models/types';
+import { DropdownItem, SortOptions } from '../../models/types';
 import { SuggestionsContext } from '../../store/SuggestionsContext';
+import { useNavigate } from 'react-router-dom';
 
 type Props ={
     length:number
 }
 const sortListMock = [
-  {label:'Most Upvotes',id:1, selected:true},
-  {label:'Least Upvotes',id:2, selected:false},
-  {label:'Most Comments',id:3, selected:false},
-  {label:'Least Comments',id:4, selected:false}
+  { label: SortOptions.MostUpvotes as string, id: 1, selected: true },
+  { label: SortOptions.LeastUpvotes as string, id: 2, selected: false },
+  { label: SortOptions.MostComments as string, id: 3, selected: false },
+  { label: SortOptions.LeastComments as string, id: 4, selected: false },
 ];
+
 const SuggestionHeader:React.FC<Props> = (props)=>{
   const [sortOpen,setSortOpen] = useState(false);
   const [sortList, setSortList] = useState(sortListMock);
   const suggestionsCtx = useContext(SuggestionsContext);
-
+  const navigate = useNavigate();
   const selected: DropdownItem | undefined = sortList.find((item) => item.selected);
   
   const handleSortVisible = () => {
@@ -47,6 +49,9 @@ const SuggestionHeader:React.FC<Props> = (props)=>{
     setSortList(updatedList);
   };
 
+  const handleGotoFeedback = () =>{
+    navigate('./addfeedback');
+  };
 
   return(
     <section className={styles.suggestionsHeader}>
@@ -61,7 +66,7 @@ const SuggestionHeader:React.FC<Props> = (props)=>{
         }
         {sortOpen && <Dropdown items={sortList} clickOnItem={handleClickOnItem}/>}      
       </div>
-      <Button type={1}>
+      <Button buttonType={1} onClick={handleGotoFeedback}>
         <PlusIcon/>
         {' Add Feedback'}
       </Button>

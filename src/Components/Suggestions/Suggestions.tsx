@@ -8,14 +8,15 @@ import HamburguerIcon from '../UI/HamburguerIcon/HamburguerIcon';
 import { ReactComponent as IllustrationEmpty} from '../../assets/suggestions/illustration-empty.svg';
 import { ReactComponent as PlusIcon } from '../../assets/shared/icon-plus.svg';
 import Button from '../UI/Button/Button';
+import { FilterOptions } from '../../models/types';
 
 const labelsMock = [
-  {value:'All',id:1, selected:true},
-  {value:'UI',id:2, selected:false},
-  {value:'UX',id:3, selected:false},
-  {value:'Enhancement',id:4, selected:false},
-  {value:'Bug',id:5, selected:false},
-  {value:'Feature',id:6, selected:false}
+  {value: FilterOptions.All,id:1, selected:true},
+  {value: FilterOptions.UI,id:2, selected:false},
+  {value: FilterOptions.UX,id:3, selected:false},
+  {value: FilterOptions.Enhancement,id:4, selected:false},
+  {value: FilterOptions.Bug,id:5, selected:false},
+  {value: FilterOptions.Feature,id:6, selected:false}
 ];
 
 export const EmptySuggestions = () =>{
@@ -24,7 +25,7 @@ export const EmptySuggestions = () =>{
       <IllustrationEmpty/>
       <h1>There is no feedback yet.</h1>
       <p>Got a suggestion? Found a bug that needs to be squashed? We love hearing about new ideas to improve our app.</p>
-      <Button type={1}>
+      <Button buttonType={1}>
         <PlusIcon/>
         {' Add Feedback'}
       </Button>
@@ -34,10 +35,12 @@ export const EmptySuggestions = () =>{
 
 const Suggestions:React.FC = () => {
   const [labels, setLabels] = useState(labelsMock);
-  const {productRequests} = useContext(SuggestionsContext);
+  const {suggestions} = useContext(SuggestionsContext);
   const [isBarMobileActive, setIsBarMobileActive] = useState(false);
+  const suggestionsCtx = useContext(SuggestionsContext);
 
-  const handleTag = (id:number) =>{
+  const handleTag = (id:number,label:string) =>{
+    suggestionsCtx.filterByCategory(label.toLowerCase());
     const updatedLabels = labels.map(l=>
       l.id === id ? { ...l, selected: true } : { ...l, selected: false }
     );
@@ -57,7 +60,7 @@ const Suggestions:React.FC = () => {
         </div>
         <Card className={styles.tagsContainer}>
           {labels.map((l)=>(
-            <label className={`tag h ${l.selected ? 'tagSelected' : ''}`} key={l.id} onClick={()=>handleTag(l.id)}>{l.value}</label>
+            <label className={`tag h ${l.selected ? 'tagSelected' : ''}`} key={l.id} onClick={()=>handleTag(l.id,l.value)}>{l.value}</label>
           ))}
         </Card>
         <Card className={styles.roadmapContainer}>
@@ -76,7 +79,7 @@ const Suggestions:React.FC = () => {
           <div>
             <Card className={styles.tagsContainer}>
               {labels.map((l)=>(
-                <label className={`tag h ${l.selected ? 'tagSelected' : ''}`} key={l.id} onClick={()=>handleTag(l.id)}>{l.value}</label>
+                <label className={`tag h ${l.selected ? 'tagSelected' : ''}`} key={l.id} onClick={()=>handleTag(l.id,l.value)}>{l.value}</label>
               ))}
             </Card>
             <Card className={styles.roadmapContainer}>
@@ -92,13 +95,13 @@ const Suggestions:React.FC = () => {
         </div>
       }      
       <section className={styles.suggestions}>
-        <SuggestionHeader length={productRequests.length}/>
+        <SuggestionHeader length={suggestions.length}/>
         {
-          productRequests.length === 0 ? <EmptySuggestions/> 
+          suggestions.length === 0 ? <EmptySuggestions/> 
             :
             <div className={styles.requestsContainer}>      
               {
-                productRequests.map((pr)=>(
+                suggestions.map((pr)=>(
                   <SuggestionItem request={pr} key={pr.id}/>
                 ))
               }

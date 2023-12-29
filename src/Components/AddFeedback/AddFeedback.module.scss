@@ -1,0 +1,38 @@
+@import '../../scss/variables.scss';
+
+.addFeedbackContainer{
+    max-width: 33.75rem;
+    margin:0 auto;
+
+    @media screen and (min-width:$min-desktop-width) {
+        margin-top: 5.88rem;
+        margin-bottom: 5.88rem;
+    }
+
+    .addFeedback{
+        margin-top: 4.25rem;
+        padding: 2.5rem 2.62rem;
+
+        > svg{
+            position: relative;
+            top:-4.2rem;
+        }
+
+        h1{
+            margin-bottom: 2.5rem;
+        }
+
+        .actions{
+            margin-top: 2rem;
+            display: flex;
+            justify-content: flex-end;
+            gap:1rem;
+            button:first-of-type{
+                width: 5.8125rem;
+            }
+            button:last-of-type{
+                width: 9rem;
+            }
+        }
+    }
+}

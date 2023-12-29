@@ -36,7 +36,7 @@ const FeedbackTree:React.FC<Props> = ({comments, firstBranch}) =>{
     activeReplies.includes(id) && (
       <div className={styles.replyComment}>
         <AutoResizableTextarea/>
-        <Button type={1}>Post Reply</Button>
+        <Button buttonType={1}>Post Reply</Button>
       </div>
     )
   );

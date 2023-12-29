@@ -5,9 +5,15 @@ const MAX_CHARACTERS = 250;
 
 type Props = {
   onCharactersRemainingChange?: (charactersRemaining: number) => void;
+  id?:string;
+  name?:string;
+  onChange?:(e: string | ChangeEvent<any>)=>void;
+  onBlur?:(e: string | ChangeEvent<any>)=>void;
+  value?:string;
+  className?:string;
 };
 
-const AutoResizableTextarea: React.FC<Props> = ({ onCharactersRemainingChange }) => {
+const AutoResizableTextarea: React.FC<Props> = ({ onCharactersRemainingChange, id, name, onChange, onBlur, className }) => {
   const [value, setValue] = useState<string>('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -18,6 +24,7 @@ const AutoResizableTextarea: React.FC<Props> = ({ onCharactersRemainingChange })
       setValue(newValue);
       autoResizeTextarea();
     }
+    if(onChange) onChange(event);
   };
 
   const autoResizeTextarea = () => {
@@ -38,11 +45,14 @@ const AutoResizableTextarea: React.FC<Props> = ({ onCharactersRemainingChange })
 
   return (
     <textarea
+      id={id}
+      name={name}
       ref={textareaRef}
       value={value}
       onChange={handleInputChange}
+      onBlur={onBlur}
       placeholder='Type your comment here'
-      className={styles.textarea}  
+      className={`${styles.textarea} ${className}`}  
     />
   );
 };
