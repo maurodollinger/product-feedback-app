@@ -7,10 +7,11 @@ import { ReactComponent as IconComments } from '../../assets/shared/icon-comment
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
-  request:Suggestions
+  request:Suggestions,
+  isClickable?:boolean
 };
 
-const SuggestionItem:React.FC<Props> = ({request}) =>{
+const SuggestionItem:React.FC<Props> = ({request, isClickable=true}) =>{
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
@@ -31,7 +32,7 @@ const SuggestionItem:React.FC<Props> = ({request}) =>{
   };
 
   return (
-    <Card className={styles.suggestionItem} onClick={handleNavigation}>
+    <Card className={`${styles.suggestionItem} ${isClickable ? styles.isClickable : ''}`} onClick={isClickable ? handleNavigation : undefined}>
       <Counter upvotes={request.upvotes} onMouseOver={handleHover} onMouseLeave={handleLeave} onCounterClick={handleCounterClick}/>
       <div>
         <h3 className={isHovered ? styles.isHovered : ''}>{request.title}</h3>

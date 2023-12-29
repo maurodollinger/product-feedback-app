@@ -49,12 +49,8 @@ const SuggestionHeader:React.FC<Props> = (props)=>{
     setSortList(updatedList);
   };
 
-  const handleGotoFeedback = () =>{
-    navigate('./addfeedback');
-  };
-
   return(
-    <section className={styles.suggestionsHeader}>
+    <header className={`${styles.suggestionsHeader} header`}>
       <IconHeader/>
       <h3>{props.length} Suggestions</h3>
       <div className={`${styles.sortBy} ${sortOpen ? styles.sortOpen : ''}`} onClick={handleSortVisible}>
@@ -66,11 +62,11 @@ const SuggestionHeader:React.FC<Props> = (props)=>{
         }
         {sortOpen && <Dropdown items={sortList} clickOnItem={handleClickOnItem}/>}      
       </div>
-      <Button buttonType={1} onClick={handleGotoFeedback}>
+      <Button buttonType={1} onClick={()=>navigate('./addfeedback')}>
         <PlusIcon/>
         {' Add Feedback'}
       </Button>
-    </section>);
+    </header>);
 };
 
 export default SuggestionHeader;

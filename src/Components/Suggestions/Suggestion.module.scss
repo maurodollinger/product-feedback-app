@@ -7,8 +7,6 @@
     margin-right: 2rem; 
     position: relative;
     @media screen and (min-width:$min-desktop-width) {
-        margin-top:5.88rem;
-        margin-bottom:5.88rem;
         .suggestionNavigation{
             max-width: 15.9375rem;
         }
@@ -203,17 +201,8 @@
 
 @import '../../scss/variables.scss';
 
-.suggestionsHeader{
-    border-radius: 0.625rem;
-    background: #373F68;
-    height: 4.5rem;
-    display: flex;
-    align-items: center;
-    padding-left:1.5rem;
-    padding-right: 1rem;
-    @media screen and (max-width:$mobile-width-double) {
-        border-radius: 0;
-    }
+.suggestionsHeader{  
+   
 
     @media screen and (max-width:600px){
         >svg,h3{
@@ -229,14 +218,7 @@
             font-size: 0.8125rem;
         }
     }
-    h3{
-        margin-left: 1rem;
-        color: #FFF;
-    }
-    button{
-        margin-left: auto;
-    }
-
+   
     .sortBy{
         position: relative;
         height: 1.25rem;
@@ -271,7 +253,9 @@
     padding: 1.75rem 2rem;
     display: flex;
     gap:2.5rem;
-    cursor: pointer;
+    &.isClickable{
+        cursor: pointer;
+    }
     .tagDiv{
         margin-top: 0.75rem;
     }

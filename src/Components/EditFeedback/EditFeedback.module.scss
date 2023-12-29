@@ -1,8 +1,7 @@
 @import '../../scss/variables.scss';
 
-.addFeedbackContainer{
-
-    .addFeedback{
+.editFeedbackContainer{
+    .editFeedback{
         margin-top: 4.25rem;
         padding: 2.5rem 2.62rem;
 
@@ -20,7 +19,12 @@
             display: flex;
             justify-content: flex-end;
             gap:1rem;
+            
             button:first-of-type{
+                width:5.8125rem;
+                margin-right: auto;
+            }
+            button:nth-of-type(2){
                 width: 5.8125rem;
             }
             button:last-of-type{

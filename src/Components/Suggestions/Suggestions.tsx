@@ -9,6 +9,7 @@ import { ReactComponent as IllustrationEmpty} from '../../assets/suggestions/ill
 import { ReactComponent as PlusIcon } from '../../assets/shared/icon-plus.svg';
 import Button from '../UI/Button/Button';
 import { FilterOptions } from '../../models/types';
+import { useNavigate } from 'react-router-dom';
 
 const labelsMock = [
   {value: FilterOptions.All,id:1, selected:true},
@@ -38,6 +39,7 @@ const Suggestions:React.FC = () => {
   const {suggestions} = useContext(SuggestionsContext);
   const [isBarMobileActive, setIsBarMobileActive] = useState(false);
   const suggestionsCtx = useContext(SuggestionsContext);
+  const navigate = useNavigate();
 
   const handleTag = (id:number,label:string) =>{
     suggestionsCtx.filterByCategory(label.toLowerCase());
@@ -65,7 +67,7 @@ const Suggestions:React.FC = () => {
         </Card>
         <Card className={styles.roadmapContainer}>
           <h3>Roadmap</h3>
-          <span>View</span>
+          <span onClick={()=>navigate('./roadmap')}>View</span>
           <ul>
             <li>Planned <span>2</span></li>
             <li>In-Progress <span>3</span></li>
@@ -84,7 +86,7 @@ const Suggestions:React.FC = () => {
             </Card>
             <Card className={styles.roadmapContainer}>
               <h3>Roadmap</h3>
-              <span>View</span>
+              <span onClick={()=>navigate('./roadmap')}>View</span>
               <ul>
                 <li>Planned <span>2</span></li>
                 <li>In-Progress <span>3</span></li>

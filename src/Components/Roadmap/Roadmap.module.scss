@@ -1,0 +1,20 @@
+.roadmap{
+    max-width: 69.375rem;
+    margin-left: auto;
+    margin-right: auto;
+    .roadmapHeader{
+        width: 100%;
+        height: 7.0625rem;
+        > div{
+            height: 3.6875rem;
+            display: flex;
+            flex-direction: column;
+            button{
+                color:white;
+                path{
+                    stroke:white;
+                }
+            }
+        }
+    }
+}

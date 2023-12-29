@@ -13,8 +13,8 @@ type Props = {
   className?:string;
 };
 
-const AutoResizableTextarea: React.FC<Props> = ({ onCharactersRemainingChange, id, name, onChange, onBlur, className }) => {
-  const [value, setValue] = useState<string>('');
+const AutoResizableTextarea: React.FC<Props> = ({ onCharactersRemainingChange, id, name, value = '', onChange, onBlur, className }) => {
+  const [_value, setValue] = useState<string>(value);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 
@@ -35,7 +35,7 @@ const AutoResizableTextarea: React.FC<Props> = ({ onCharactersRemainingChange, i
   };
 
 
-  const charactersRemaining = MAX_CHARACTERS - value.length;
+  const charactersRemaining = MAX_CHARACTERS - _value.length;
 
   useEffect(() => {
     if (onCharactersRemainingChange) {
@@ -48,7 +48,7 @@ const AutoResizableTextarea: React.FC<Props> = ({ onCharactersRemainingChange, i
       id={id}
       name={name}
       ref={textareaRef}
-      value={value}
+      value={_value}
       onChange={handleInputChange}
       onBlur={onBlur}
       placeholder='Type your comment here'

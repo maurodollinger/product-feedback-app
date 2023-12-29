@@ -9,6 +9,7 @@ import { SuggestionsContextProvider } from './store/SuggestionsContext';
 import FeedbackDetail from './Components/FeedbackDetail/FeedbackDetail';
 import './scss/main.scss';
 import AddFeedback from './Components/AddFeedback/AddFeedback';
+import EditFeedback from './Components/EditFeedback/EditFeedback';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path='/product-feedback-app/roadmap' element={<Roadmap/>}/>
           <Route path='/product-feedback-app/feedbackdetail/:id' element={<FeedbackDetail/>}/>
           <Route path='/product-feedback-app/addfeedback' element={<AddFeedback/>}/>
+          <Route path='/product-feedback-app/editfeedback/:id' element={<EditFeedback/>}/>
         </Route>
       </Routes>
     </Fragment>

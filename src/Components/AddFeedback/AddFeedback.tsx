@@ -52,7 +52,7 @@ const AddFeedback:React.FC = () =>{
   const selected: DropdownItem | undefined = sortList.find((item) => item.selected);
 
   return(
-    <section className={styles.addFeedbackContainer}>
+    <section className={`${styles.addFeedbackContainer} thinContainer`}>
       <GoBackButton/>
       <Card className={styles.addFeedback}>
         <PlusIconImage/>

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../UI/Button/Button';
 import styles from './Feedback.module.scss';
 import GoBackButton from '../UI/GoBackButton/GoBackButton';
@@ -16,9 +16,14 @@ const FeedbackDetail:React.FC = () =>{
   const [ feedbackRequest, setFeedbackRequest] = useState<Suggestions>(request);
   const { suggestions } = useContext(SuggestionsContext);
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const handleCharactersRemaining = (charactersRemaining: number) => {
     setCharactersRemaining(charactersRemaining);
+  };
+
+  const handleEditFeedback = () =>{
+    navigate(`../editfeedback/${id}`);
   };
 
   useEffect(() => {
@@ -31,12 +36,12 @@ const FeedbackDetail:React.FC = () =>{
   }, [id, suggestions]);
 
   return(
-    <section className={styles.feedbackDetailContainer}>
+    <section className={`${styles.feedbackDetailContainer} container`}>
       <div>
         <GoBackButton></GoBackButton>
-        <Button buttonType={2}>Edit Feedback</Button>
+        <Button buttonType={2} onClick={handleEditFeedback}>Edit Feedback</Button>
       </div>
-      <SuggestionItem request={feedbackRequest}></SuggestionItem>
+      <SuggestionItem request={feedbackRequest} isClickable={false}></SuggestionItem>
       {
         feedbackRequest.comments && (
           <Card className={styles.comments}>
