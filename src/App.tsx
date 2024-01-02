@@ -15,12 +15,12 @@ function App() {
   return (
     <Fragment>
       <Routes>
-        <Route path="/product-feedback-app" element={<Layout />}>
-          <Route path='/product-feedback-app' index element={<Suggestions />} />
-          <Route path='/product-feedback-app/roadmap' element={<Roadmap/>}/>
-          <Route path='/product-feedback-app/feedbackdetail/:id' element={<FeedbackDetail/>}/>
-          <Route path='/product-feedback-app/addfeedback' element={<AddFeedback/>}/>
-          <Route path='/product-feedback-app/editfeedback/:id' element={<EditFeedback/>}/>
+        <Route path="/" element={<Layout />}>
+          <Route path='/' index element={<Suggestions />} />
+          <Route path='/roadmap' element={<Roadmap/>}/>
+          <Route path='/feedbackdetail/:id' element={<FeedbackDetail/>}/>
+          <Route path='/addfeedback' element={<AddFeedback/>}/>
+          <Route path='/editfeedback/:id' element={<EditFeedback/>}/>
         </Route>
       </Routes>
     </Fragment>
