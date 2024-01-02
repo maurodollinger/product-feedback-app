@@ -18,12 +18,12 @@ const validationSchema = Yup.object().shape({
 
 
 const labelsMock = [
-  {label: FilterOptions.All as string,id:1, selected:true},
-  {label: FilterOptions.UI as string,id:2, selected:false},
-  {label: FilterOptions.UX as string,id:3, selected:false},
-  {label: FilterOptions.Enhancement as string,id:4, selected:false},
-  {label: FilterOptions.Bug as string,id:5, selected:false},
-  {label: FilterOptions.Feature as string,id:6, selected:false}
+  {label: FilterOptions.All as string,value:'',id:1, selected:true},
+  {label: FilterOptions.UI as string,value:'',id:2, selected:false},
+  {label: FilterOptions.UX as string,value:'',id:3, selected:false},
+  {label: FilterOptions.Enhancement as string,value:'',id:4, selected:false},
+  {label: FilterOptions.Bug as string,value:'',id:5, selected:false},
+  {label: FilterOptions.Feature as string,value:'',id:6, selected:false}
 ];
 
 const AddFeedback:React.FC = () =>{

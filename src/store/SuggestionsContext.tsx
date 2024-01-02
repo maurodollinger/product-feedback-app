@@ -1,5 +1,14 @@
 import React, { useEffect, useReducer } from 'react';
-import { FilterOptions, RoadmapStatusLowcap, SuggestionReducerProps, Suggestions, SuggestionsContextProps, SuggestionsContextProviderProps } from '../models/types';
+import { FilterOptions, RoadmapStatusLowcap, SortConstants, SuggestionReducerProps, Suggestions, SuggestionsContextProps, SuggestionsContextProviderProps } from '../models/types';
+
+const ActionTypes = {
+  UPDATE_LEAST_UPVOTES: SortConstants.LeastUpvotes as string,
+  UPDATE_MOST_UPVOTES: SortConstants.MostUpvotes as string,
+  UPDATE_LEAST_COMMENTS: SortConstants.LeastComments as string,
+  UPDATE_MOST_COMMENTS: SortConstants.MostComments as string,
+  FILTER_BY_CATEGORY: 'FILTER_BY_CATEGORY',
+  UPDATE_ROADMAP_LIST: 'UPDATE_ROADMAP_LIST'
+};
 
 const initialUserContextValues: SuggestionsContextProps = {
   currentUser: {
@@ -10,6 +19,8 @@ const initialUserContextValues: SuggestionsContextProps = {
   suggestions: [],
   originalSuggestions:[],
   roadmapList:{planned:[],inProgress:[],live:[]},
+  currentSort:ActionTypes.UPDATE_MOST_UPVOTES,
+  currentCategory:FilterOptions.All,
   updateByLeastUpvotes:()=>{/**/},
   updateByMostUpvotes:()=>{/**/},
   updateByLeastComments:()=>{/**/},
@@ -18,15 +29,6 @@ const initialUserContextValues: SuggestionsContextProps = {
 };
 
 export const SuggestionsContext = React.createContext<SuggestionsContextProps>(initialUserContextValues);
-
-const ActionTypes = {
-  UPDATE_LEAST_UPVOTES: 'UPDATE_LEAST_UPVOTES',
-  UPDATE_MOST_UPVOTES: 'UPDATE_MOST_UPVOTES',
-  UPDATE_LEAST_COMMENTS: 'UPDATE_LEAST_COMMENTS',
-  UPDATE_MOST_COMMENTS: 'UPDATE_MOST_COMMENTS',
-  FILTER_BY_CATEGORY: 'FILTER_BY_CATEGORY',
-  UPDATE_ROADMAP_LIST: 'UPDATE_ROADMAP_LIST'
-};
 
 type Action =
   | { type: typeof ActionTypes.UPDATE_LEAST_UPVOTES; category?: string }
@@ -53,20 +55,20 @@ const filterByCategory = (items: Suggestions[], category: string) =>
   category === FilterOptions.All.toLowerCase() ? items : items.filter((item) => item.category.toLowerCase() === category.toLowerCase());
 
 const suggestionsReducer = (state:SuggestionReducerProps,action:Action) => {
-  const { suggestions, originalSuggestions, currentSort, roadmapList } = state;
+  const { suggestions, originalSuggestions, currentSort, currentCategory, roadmapList } = state;
   const category = (action.category!==undefined) ? action.category : '';
 
   switch (action.type) {
   case ActionTypes.UPDATE_LEAST_UPVOTES:
-    return { suggestions: sortByUpvotes(suggestions, true), originalSuggestions, currentSort: ActionTypes.UPDATE_LEAST_UPVOTES, roadmapList};
+    return { suggestions: sortByUpvotes(suggestions, true), originalSuggestions, currentCategory, currentSort: ActionTypes.UPDATE_LEAST_UPVOTES, roadmapList};
   case ActionTypes.UPDATE_MOST_UPVOTES:
-    return { suggestions: sortByUpvotes(suggestions, false), originalSuggestions, currentSort: ActionTypes.UPDATE_MOST_UPVOTES, roadmapList};
+    return { suggestions: sortByUpvotes(suggestions, false), originalSuggestions, currentCategory, currentSort: ActionTypes.UPDATE_MOST_UPVOTES, roadmapList};
   case ActionTypes.UPDATE_LEAST_COMMENTS:
-    return { suggestions: sortByCommentsLength(suggestions, true), originalSuggestions, currentSort: ActionTypes.UPDATE_LEAST_COMMENTS, roadmapList};
+    return { suggestions: sortByCommentsLength(suggestions, true), originalSuggestions,currentCategory,  currentSort: ActionTypes.UPDATE_LEAST_COMMENTS, roadmapList};
   case ActionTypes.UPDATE_MOST_COMMENTS:
-    return { suggestions: sortByCommentsLength(suggestions, false), originalSuggestions, currentSort: ActionTypes.UPDATE_MOST_COMMENTS, roadmapList};
+    return { suggestions: sortByCommentsLength(suggestions, false), originalSuggestions,currentCategory,  currentSort: ActionTypes.UPDATE_MOST_COMMENTS, roadmapList};
   case ActionTypes.FILTER_BY_CATEGORY:
-    return { suggestions: filterByCategory(originalSuggestions, category), originalSuggestions, currentSort, roadmapList};
+    return { suggestions: filterByCategory(originalSuggestions, category), originalSuggestions, currentCategory:category,  currentSort, roadmapList};
   case ActionTypes.UPDATE_ROADMAP_LIST:{
     const { planned, inProgress, live } = action as {
       type: typeof ActionTypes.UPDATE_ROADMAP_LIST;
@@ -78,6 +80,7 @@ const suggestionsReducer = (state:SuggestionReducerProps,action:Action) => {
       suggestions: suggestions,
       originalSuggestions: originalSuggestions,
       currentSort: currentSort,
+      currentCategory:currentCategory,
       roadmapList: {
         planned: planned,
         inProgress: inProgress,
@@ -92,14 +95,18 @@ const suggestionsReducer = (state:SuggestionReducerProps,action:Action) => {
 
 export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps> = (props) =>{
 
+  const storedSuggestion:SuggestionReducerProps = JSON.parse(localStorage.getItem('suggestions') || 'null') || {
+    suggestions: props.suggestions,
+    originalSuggestions: props.suggestions,
+    currentSort:ActionTypes.UPDATE_MOST_UPVOTES,
+    currentCategory:FilterOptions.All,
+    roadmapList:{planned:[],inProgress:[],live:[]}
+  };
+
+  console.log(storedSuggestion);
+
   const [suggestionsState, dispatchSuggestionsAction] = useReducer(
-    suggestionsReducer as React.Reducer<SuggestionReducerProps, Action>,
-    {
-      suggestions: props.suggestions,
-      originalSuggestions: props.suggestions,
-      currentSort:ActionTypes.UPDATE_MOST_UPVOTES,
-      roadmapList:{planned:[],inProgress:[],live:[]}
-    }
+    suggestionsReducer as React.Reducer<SuggestionReducerProps, Action>,storedSuggestion
   );  
 
   const updateByLeastUpvotes = () =>{
@@ -136,6 +143,9 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     });
   }, [suggestionsState.originalSuggestions]);
   
+  useEffect(()=>{
+    localStorage.setItem('suggestions',JSON.stringify(suggestionsState));
+  },[suggestionsState]);
 
 
   const suggestionsCtx = {
@@ -143,6 +153,8 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     suggestions:suggestionsState.suggestions,
     originalSuggestions:suggestionsState.originalSuggestions,
     roadmapList:suggestionsState.roadmapList,
+    currentSort:suggestionsState.currentSort,
+    currentCategory:suggestionsState.currentCategory,
     updateByLeastUpvotes,
     updateByMostUpvotes,
     updateByLeastComments,

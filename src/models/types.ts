@@ -34,6 +34,8 @@ interface SuggestionsContextProps {
   suggestions: Suggestions[];
   originalSuggestions: Suggestions[];
   roadmapList:RoadmapList;
+  currentSort:string;
+  currentCategory:string;
   updateByLeastUpvotes:()=>any;
   updateByMostUpvotes:()=>any;
   updateByLeastComments:()=>any;
@@ -43,6 +45,7 @@ interface SuggestionsContextProps {
 
 interface DropdownItem {
   label: string;
+  value:string;
   id: number;
   selected: boolean;
 }
@@ -51,6 +54,7 @@ interface SuggestionReducerProps {
   suggestions:Suggestions[];
   originalSuggestions:Suggestions[];
   currentSort:string;
+  currentCategory:string;
   roadmapList:RoadmapList;
 }
 
@@ -65,6 +69,13 @@ export enum SortOptions {
   LeastUpvotes = 'Least Upvotes',
   MostComments = 'Most Comments',
   LeastComments = 'Least Comments',
+}
+
+export enum SortConstants{
+  MostUpvotes = 'UPDATE_MOST_UPVOTES',
+  LeastUpvotes = 'UPDATE_LEAST_UPVOTES',
+  MostComments = 'UPDATE_MOST_COMMENTS',
+  LeastComments = 'UPDATE_LEAST_COMMENTS',
 }
 
 export enum FilterOptions{

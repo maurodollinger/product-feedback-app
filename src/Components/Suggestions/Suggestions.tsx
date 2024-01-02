@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SuggestionsContext } from '../../store/SuggestionsContext';
 import SuggestionItem from './SuggestionItem';
 import styles from './Suggestion.module.scss';
@@ -36,18 +36,17 @@ export const EmptySuggestions = () =>{
 };
 
 const Suggestions:React.FC = () => {
-  const [labels, setLabels] = useState(labelsMock);
-  const {suggestions} = useContext(SuggestionsContext);
+  const {suggestions, filterByCategory, roadmapList, currentCategory} = useContext(SuggestionsContext);
+  const [categories, setCategories] = useState(labelsMock);
   const [isBarMobileActive, setIsBarMobileActive] = useState(false);
-  const suggestionsCtx = useContext(SuggestionsContext);
   const navigate = useNavigate();
 
   const handleTag = (id:number,label:string) =>{
-    suggestionsCtx.filterByCategory(label.toLowerCase());
-    const updatedLabels = labels.map(l=>
+    filterByCategory(label.toLowerCase());
+    const updatedCategories = categories.map(l=>
       l.id === id ? { ...l, selected: true } : { ...l, selected: false }
     );
-    setLabels(updatedLabels);
+    setCategories(updatedCategories);
   };
 
   const handleMobileBar = (isActive:boolean) =>{
@@ -59,11 +58,11 @@ const Suggestions:React.FC = () => {
       <Card className={styles.roadmapContainer}>
         <h3>Roadmap</h3>
         <span onClick={()=>navigate('./roadmap')}>View</span>
-        {suggestionsCtx && (
+        {roadmapList && (
           <ul>
-            <li>Planned <span>{suggestionsCtx.roadmapList?.planned?.length || 0}</span></li>
-            <li>In-Progress <span>{suggestionsCtx.roadmapList?.inProgress?.length || 0}</span></li>
-            <li>Live <span>{suggestionsCtx.roadmapList?.live?.length || 0}</span></li>
+            <li>Planned <span>{roadmapList?.planned?.length || 0}</span></li>
+            <li>In-Progress <span>{roadmapList?.inProgress?.length || 0}</span></li>
+            <li>Live <span>{roadmapList?.live?.length || 0}</span></li>
           </ul>
         )}
       </Card>  
@@ -73,12 +72,22 @@ const Suggestions:React.FC = () => {
   const renderTagContainer = () =>{
     return(
       <Card className={styles.tagsContainer}>
-        {labels.map((l)=>(
+        {categories.map((l)=>(
           <label className={`tag h ${l.selected ? 'tagSelected' : ''}`} key={l.id} onClick={()=>handleTag(l.id,l.value)}>{l.value}</label>
         ))}
       </Card>
     );
   };
+
+  useEffect(()=>{
+    if(currentCategory!==''){
+      const updatedCategories = categories.map(l=>
+        l.value.toLowerCase() === currentCategory ? { ...l, selected: true } : { ...l, selected: false }
+      );
+      setCategories(updatedCategories);
+    }   
+  },
+  [currentCategory]);
 
   return (
     <div className={`container ${styles.suggestionsContainer}`}>
