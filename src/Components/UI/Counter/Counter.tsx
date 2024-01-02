@@ -5,12 +5,13 @@ import {ReactComponent as IconArrow } from '../../../assets/shared/icon-arrow-up
 type Props = {
     upvotes:number
     disabled?:boolean,
+    horizontal?:boolean,
     onMouseOver?: () => void;
     onMouseLeave?: () => void;
     onCounterClick: (e:React.MouseEvent) => void;
 }
 
-const Counter:React.FC<Props> = ({upvotes, disabled=false, onMouseOver, onMouseLeave, onCounterClick}) =>{
+const Counter:React.FC<Props> = ({upvotes, disabled=false, horizontal=false, onMouseOver, onMouseLeave, onCounterClick}) =>{
 
   const handleMouseOver = () => {
     if (onMouseOver) {
@@ -25,7 +26,7 @@ const Counter:React.FC<Props> = ({upvotes, disabled=false, onMouseOver, onMouseL
   };
 
   return(
-    <div className={`${styles.counter} ${disabled ? styles.disabled : ''}`}  
+    <div className={`${styles.counter} ${disabled ? styles.disabled : ''} ${horizontal ? styles.horizontal : ''}`}  
       onMouseOver={handleMouseOver} 
       onMouseLeave={handleMouseLeave} 
       onClick={onCounterClick}>

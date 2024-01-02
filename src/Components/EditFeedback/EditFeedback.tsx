@@ -6,10 +6,10 @@ import AutoResizableTextarea from '../UI/AutoResizableTextarea/AutoResizableText
 import { ReactComponent as PlusIconImage } from '../../assets/shared/icon-new-feedback.svg';
 import Button from '../UI/Button/Button';
 import Dropdown from '../UI/Dropdown/Dropdown';
-import { DropdownItem, FilterOptions, Suggestions } from '../../models/types';
+import { DropdownItem, FilterOptions, RoadmapStatus, Suggestions } from '../../models/types';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { SuggestionsContext } from '../../store/SuggestionsContext';
 
 const validationSchema = Yup.object().shape({
@@ -28,12 +28,14 @@ const labelsMock = [
 ];
 
 const updatedStatusMock = [
-  {label: 'Planned',id:1, selected:true},
-  {label: 'In-Progress',id:2, selected:false},
-  {label: 'Live',id:3, selected:false}
+  {label: RoadmapStatus.Suggestion as string,id:1, selected:true},
+  {label: RoadmapStatus.Planned as string,id:2, selected:false},
+  {label: RoadmapStatus.InProgress as string,id:3, selected:false},
+  {label: RoadmapStatus.Live as string,id:3, selected:false}
 ];
 
 const EditFeedback:React.FC = () =>{
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [ feedbackRequest, setFeedbackRequest] = useState<Suggestions>();
   const { suggestions } = useContext(SuggestionsContext);
@@ -157,7 +159,7 @@ const EditFeedback:React.FC = () =>{
           </div>
           <div className={styles.actions}>
             <Button buttonType={4}>Delete</Button>
-            <Button buttonType={3}>Cancel</Button>
+            <Button buttonType={3} onClick={()=>navigate(-1)}>Cancel</Button>
             <Button buttonType={1} type='submit'>Edit Feedback</Button>
           </div>
         </form>

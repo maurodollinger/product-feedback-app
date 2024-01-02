@@ -259,28 +259,7 @@
     .tagDiv{
         margin-top: 0.75rem;
     }
-    .commentsDiv{
-        margin-left: auto;
-        display: flex;
-        align-self: center;
-        width: 2.75rem;
-        height: 1.4375rem;
-        justify-content: center;
-        align-items: center;
-        gap: 0.5rem;
-        flex-shrink: 0;
-        span{
-            width: 1.125rem;
-            flex-shrink: 0; 
-            color: #3A4374;
-            text-align: center;
-            font-size: 1rem;
-            font-style: normal;
-            font-weight: 700;
-            line-height: normal;
-            letter-spacing: -0.01388rem;
-        }
-    }
+   
     h3{
         transition: color 0.1s ease-in;
         &.isHovered{
@@ -294,11 +273,6 @@
         padding: 1.5rem;
         >div:first-child{
             order:1;
-        }
-        .commentsDiv{
-            position: absolute;
-            bottom:1.75rem;
-            right:1.5rem;
         }
     }
 }

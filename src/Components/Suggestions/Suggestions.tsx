@@ -21,12 +21,13 @@ const labelsMock = [
 ];
 
 export const EmptySuggestions = () =>{
+  const navigate = useNavigate();
   return(
     <Card className={styles.emptySuggestions}>
       <IllustrationEmpty/>
       <h1>There is no feedback yet.</h1>
       <p>Got a suggestion? Found a bug that needs to be squashed? We love hearing about new ideas to improve our app.</p>
-      <Button buttonType={1}>
+      <Button buttonType={1} onClick={()=>navigate('./addfeedback')}>
         <PlusIcon/>
         {' Add Feedback'}
       </Button>
@@ -53,6 +54,32 @@ const Suggestions:React.FC = () => {
     setIsBarMobileActive(isActive);
   };
 
+  const renderRoadmapContainer = () =>{
+    return(
+      <Card className={styles.roadmapContainer}>
+        <h3>Roadmap</h3>
+        <span onClick={()=>navigate('./roadmap')}>View</span>
+        {suggestionsCtx && (
+          <ul>
+            <li>Planned <span>{suggestionsCtx.roadmapList?.planned?.length || 0}</span></li>
+            <li>In-Progress <span>{suggestionsCtx.roadmapList?.inProgress?.length || 0}</span></li>
+            <li>Live <span>{suggestionsCtx.roadmapList?.live?.length || 0}</span></li>
+          </ul>
+        )}
+      </Card>  
+    );
+  };
+
+  const renderTagContainer = () =>{
+    return(
+      <Card className={styles.tagsContainer}>
+        {labels.map((l)=>(
+          <label className={`tag h ${l.selected ? 'tagSelected' : ''}`} key={l.id} onClick={()=>handleTag(l.id,l.value)}>{l.value}</label>
+        ))}
+      </Card>
+    );
+  };
+
   return (
     <div className={`container ${styles.suggestionsContainer}`}>
       <div className={styles.suggestionNavigation}>
@@ -60,39 +87,15 @@ const Suggestions:React.FC = () => {
           <h2>Frontend Mentor</h2>
           <p className='p2'>Feedback Board</p>
         </div>
-        <Card className={styles.tagsContainer}>
-          {labels.map((l)=>(
-            <label className={`tag h ${l.selected ? 'tagSelected' : ''}`} key={l.id} onClick={()=>handleTag(l.id,l.value)}>{l.value}</label>
-          ))}
-        </Card>
-        <Card className={styles.roadmapContainer}>
-          <h3>Roadmap</h3>
-          <span onClick={()=>navigate('./roadmap')}>View</span>
-          <ul>
-            <li>Planned <span>2</span></li>
-            <li>In-Progress <span>3</span></li>
-            <li>Live <span>1</span></li>
-          </ul>
-        </Card>        
+        {renderTagContainer()}
+        {renderRoadmapContainer()}
       </div>
       <HamburguerIcon handleOnClick={handleMobileBar}/>
       {isBarMobileActive &&
         <div className={styles.barMobile}>
           <div>
-            <Card className={styles.tagsContainer}>
-              {labels.map((l)=>(
-                <label className={`tag h ${l.selected ? 'tagSelected' : ''}`} key={l.id} onClick={()=>handleTag(l.id,l.value)}>{l.value}</label>
-              ))}
-            </Card>
-            <Card className={styles.roadmapContainer}>
-              <h3>Roadmap</h3>
-              <span onClick={()=>navigate('./roadmap')}>View</span>
-              <ul>
-                <li>Planned <span>2</span></li>
-                <li>In-Progress <span>3</span></li>
-                <li>Live <span>1</span></li>
-              </ul>
-            </Card> 
+            {renderTagContainer()}
+            {renderRoadmapContainer()} 
           </div>
         </div>
       }      

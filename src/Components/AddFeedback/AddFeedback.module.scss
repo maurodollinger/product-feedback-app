@@ -26,6 +26,13 @@
             button:last-of-type{
                 width: 9rem;
             }
+            @media screen and (max-width:610px) {
+                flex-direction: column;
+                button{
+                    width: 100%!important;
+                    max-width: none;
+                }
+            }
         }
     }
 }

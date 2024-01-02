@@ -87,9 +87,9 @@ h4{
         margin-bottom: 5.88rem;
     }
    
-    @media screen and (max-width:$tablet-width) {
-        margin: 3.5rem 0;
-    }
+    //@media screen and (max-width:$tablet-width) {
+    //    margin: 3.5rem 0;
+    //}
 }
 
 .thinContainer{
@@ -103,6 +103,10 @@ h4{
     @media screen and (max-width:$tablet-width) {
         margin-top: 3.5rem;
         margin-bottom: 3.5rem;
+    }
+    @media screen and (max-width:610px) {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
     }
 }
 
@@ -232,4 +236,37 @@ input,textarea,button{
         margin-left: auto;
     }
 
+}
+
+.commentsDiv{
+    margin-left: auto;
+    display: flex;
+    align-self: center;
+    width: 2.75rem;
+    height: 1.4375rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    span{
+        width: 1.125rem;
+        flex-shrink: 0; 
+        color: #3A4374;
+        text-align: center;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: -0.01388rem;
+    }
+    @media screen and (max-width:$mobile-width-double) {
+        position: absolute;
+        bottom:1.75rem;
+        right:1.5rem;
+    }
+    &.abs{
+        position: absolute;
+           bottom:1.75rem;
+        right:1.5rem;
+    }
 }

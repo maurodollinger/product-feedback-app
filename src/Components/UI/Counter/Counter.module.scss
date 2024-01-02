@@ -49,4 +49,17 @@
             margin-bottom: 0;
         }
     }
+    &.horizontal{
+        flex-direction: row;
+        width: 4.3125rem;
+        height: 2rem;
+        justify-content: center;
+        gap:0.5rem;
+        >div{
+            margin-bottom: 0.2rem;
+        }
+        span{
+            margin-bottom: 0;
+        }
+    }
 }

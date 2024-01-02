@@ -9,6 +9,7 @@ import Dropdown from '../UI/Dropdown/Dropdown';
 import { DropdownItem, FilterOptions } from '../../models/types';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
@@ -26,6 +27,7 @@ const labelsMock = [
 ];
 
 const AddFeedback:React.FC = () =>{
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -104,7 +106,7 @@ const AddFeedback:React.FC = () =>{
             </div>
           </div>
           <div className={styles.actions}>
-            <Button buttonType={3}>Cancel</Button>
+            <Button buttonType={3} onClick={()=>navigate(-1)}>Cancel</Button>
             <Button buttonType={1} type='submit'>Add Feedback</Button>
           </div>
         </form>

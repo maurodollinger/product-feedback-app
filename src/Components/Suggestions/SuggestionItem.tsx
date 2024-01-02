@@ -41,7 +41,7 @@ const SuggestionItem:React.FC<Props> = ({request, isClickable=true}) =>{
           {request.category}
         </div>
       </div>
-      <div className={styles.commentsDiv}>
+      <div className='commentsDiv'>
         <IconComments/>
         <span>{request.comments?.length}</span>
       </div>      
