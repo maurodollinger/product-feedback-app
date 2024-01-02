@@ -103,8 +103,6 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     roadmapList:{planned:[],inProgress:[],live:[]}
   };
 
-  console.log(storedSuggestion);
-
   const [suggestionsState, dispatchSuggestionsAction] = useReducer(
     suggestionsReducer as React.Reducer<SuggestionReducerProps, Action>,storedSuggestion
   );  
@@ -134,7 +132,7 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     const planned = suggestionsState.originalSuggestions.filter((item) => item.status === RoadmapStatusLowcap.Planned);
     const inProgress = suggestionsState.originalSuggestions.filter((item) => item.status === RoadmapStatusLowcap.InProgress);
     const live = suggestionsState.originalSuggestions.filter((item) => item.status === RoadmapStatusLowcap.Live);
-  
+
     dispatchSuggestionsAction({
       type: 'UPDATE_ROADMAP_LIST',
       planned,
