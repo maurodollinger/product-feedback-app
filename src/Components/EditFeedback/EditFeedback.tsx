@@ -11,10 +11,11 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SuggestionsContext } from '../../store/SuggestionsContext';
+import { useApi } from '../../store/ApiContext';
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
-  feedback: Yup.string().required('Can\'t be empty')
+  description: Yup.string().required('Can\'t be empty')
 });
 
 
@@ -31,7 +32,7 @@ const updatedStatusMock = [
   {label: RoadmapStatus.Suggestion as string,value:'',id:1, selected:true},
   {label: RoadmapStatus.Planned as string,value:'',id:2, selected:false},
   {label: RoadmapStatus.InProgress as string,value:'',id:3, selected:false},
-  {label: RoadmapStatus.Live as string,value:'',id:3, selected:false}
+  {label: RoadmapStatus.Live as string,value:'',id:4, selected:false}
 ];
 
 const EditFeedback:React.FC = () =>{
@@ -39,15 +40,33 @@ const EditFeedback:React.FC = () =>{
   const { id } = useParams<{ id: string }>();
   const [ feedbackRequest, setFeedbackRequest] = useState<Suggestions>();
   const { suggestions } = useContext(SuggestionsContext);
-  
+  const { deleteSuggestion, updateSuggestion } = useApi();
+
   const formik = useFormik({
     initialValues: {
       title: feedbackRequest ? feedbackRequest.title : '',
-      feedback: feedbackRequest ? feedbackRequest.description : ''
+      description: feedbackRequest ? feedbackRequest.description : ''
     },
     validationSchema:validationSchema,
     onSubmit:(values)=>{
-      console.log(values);
+      if(feedbackRequest){
+        const updateComment = {
+          ...values,
+          category:selectedSort?.label.toLowerCase() ?? feedbackRequest.category.toLowerCase(),
+          status:selectedStatus?.label.toLowerCase() ?? feedbackRequest.status.toLowerCase(),
+          upvotes:feedbackRequest.upvotes ?? 1,
+          id:feedbackRequest.id, 
+          ...(feedbackRequest.comments !== undefined && { comments: feedbackRequest.comments }),
+        };
+        if(id){
+          const _id = (+id - 1).toString();
+          updateSuggestion(_id,updateComment).then(()=>{
+            navigate(-1);
+          });
+        }
+      }
+     
+
     }
   });
 
@@ -75,6 +94,16 @@ const EditFeedback:React.FC = () =>{
     setStatusOpen(prevState=>!prevState);
   };
 
+  const handleDelete = () =>{
+    if(id){
+      // fix id number
+      const _id = (+id - 1).toString();
+      deleteSuggestion(_id).then(()=>{
+        navigate(-2);
+      });
+    }  
+  };
+
   useEffect(() => {
     const feedback = suggestions.find((item:Suggestions) => item.id.toString() === id);
     if (feedback) {
@@ -82,7 +111,7 @@ const EditFeedback:React.FC = () =>{
       formik.resetForm({
         values: {
           title: feedback.title,
-          feedback: feedback.description,
+          description: feedback.description,
         },
       });
     } else {
@@ -145,20 +174,20 @@ const EditFeedback:React.FC = () =>{
               <h4>Feedback Detail</h4>
               <p className='p5'>Include any specific comments on what should be improved, added, etc.</p>       
               <AutoResizableTextarea
-                id='feedback'
-                name='feedback'
+                id='description'
+                name='description'
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.feedback}
-                className={formik.touched.feedback && formik.errors.feedback ? 'input-error' : ''}
+                value={formik.values.description}
+                className={formik.touched.description && formik.errors.description ? 'input-error' : ''}
               />
-              {formik.touched.feedback && formik.errors.feedback ? (
-                <div className='error'>{formik.errors.feedback}</div>
+              {formik.touched.description && formik.errors.description ? (
+                <div className='error'>{formik.errors.description}</div>
               ) : null}
             </div>
           </div>
           <div className={styles.actions}>
-            <Button buttonType={4}>Delete</Button>
+            <Button buttonType={4} onClick={handleDelete}>Delete</Button>
             <Button buttonType={3} onClick={()=>navigate(-1)}>Cancel</Button>
             <Button buttonType={1} type='submit'>Edit Feedback</Button>
           </div>

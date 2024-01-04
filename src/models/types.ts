@@ -9,8 +9,8 @@ interface Comment {
   id: number;
   content: string;
   user: User;
-  replyingTo?:string;
-  replies?:Comment[];
+  replyingTo?: string;
+  replies?: Comment[];
 }
 
 interface Suggestions {
@@ -23,6 +23,15 @@ interface Suggestions {
   comments?: Comment[];
 }
 
+interface AddSuggestion{
+  id?: string;
+  title: string;
+  category: string;
+  upvotes: number;
+  status: string;
+  description: string;
+}
+
 interface SuggestionsContextProviderProps {
   children: React.ReactNode;
   currentUser: User;
@@ -33,35 +42,60 @@ interface SuggestionsContextProps {
   currentUser: User;
   suggestions: Suggestions[];
   originalSuggestions: Suggestions[];
-  roadmapList:RoadmapList;
-  currentSort:string;
-  currentCategory:string;
-  updateByLeastUpvotes:()=>any;
-  updateByMostUpvotes:()=>any;
-  updateByLeastComments:()=>any;
-  updateByMostComments:()=>any;
-  filterByCategory:(category:string)=>any;
+  roadmapList: RoadmapList;
+  currentSort: string;
+  currentCategory: string;
+  updateByLeastUpvotes: () => any;
+  updateByMostUpvotes: () => any;
+  updateByLeastComments: () => any;
+  updateByMostComments: () => any;
+  filterByCategory: (category: string) => any;
 }
 
 interface DropdownItem {
   label: string;
-  value:string;
+  value: string;
   id: number;
   selected: boolean;
 }
 
 interface SuggestionReducerProps {
-  suggestions:Suggestions[];
-  originalSuggestions:Suggestions[];
-  currentSort:string;
-  currentCategory:string;
-  roadmapList:RoadmapList;
+  suggestions: Suggestions[];
+  originalSuggestions: Suggestions[];
+  currentSort: string;
+  currentCategory: string;
+  roadmapList: RoadmapList;
 }
 
-interface RoadmapList{
-  planned:Suggestions[];
-  inProgress:Suggestions[];
-  live:Suggestions[];
+interface RoadmapList {
+  planned: Suggestions[];
+  inProgress: Suggestions[];
+  live: Suggestions[];
+}
+
+interface ApiContextProps {
+  currentUser: User;
+  suggestions: Suggestions[];
+}
+
+interface ApiContextData {
+  data: ApiContextProps;
+  isLoading: boolean;
+}
+
+interface ApiContextValue {
+  context: ApiContextData;
+  addSuggestion: (newData: AddSuggestion) => Promise<void>;
+  deleteSuggestion: (id: string) => Promise<void>;
+  updateSuggestion: (id:string, updatedData:Suggestions) => Promise<void>;
+}
+
+interface ApiType {
+  getData: () => Promise<ApiContextProps>;
+  addSuggestion: (newData: AddSuggestion) => Promise<void>;
+  deleteSuggestion: (id: string) => Promise<void>;
+  updateSuggestion: (id:string, updatedData:Suggestions) => Promise<void>;
+  //listenAuthState: (callback: (user: User | null) => void) => void;
 }
 
 export enum SortOptions {
@@ -71,14 +105,14 @@ export enum SortOptions {
   LeastComments = 'Least Comments',
 }
 
-export enum SortConstants{
+export enum SortConstants {
   MostUpvotes = 'UPDATE_MOST_UPVOTES',
   LeastUpvotes = 'UPDATE_LEAST_UPVOTES',
   MostComments = 'UPDATE_MOST_COMMENTS',
   LeastComments = 'UPDATE_LEAST_COMMENTS',
 }
 
-export enum FilterOptions{
+export enum FilterOptions {
   All = 'All',
   UI = 'UI',
   UX = 'UX',
@@ -87,18 +121,26 @@ export enum FilterOptions{
   Feature = 'Feature'
 }
 
-export enum RoadmapStatus{
+export enum RoadmapStatus {
   Suggestion = 'Suggestion',
   Planned = 'Planned',
   InProgress = 'In-Progress',
   Live = 'Live'
 }
 
-export enum RoadmapStatusLowcap{
+export enum RoadmapStatusLowcap {
   Suggestion = 'suggestion',
   Planned = 'planned',
   InProgress = 'in-progress',
   Live = 'live'
 }
 
-export type { User, Comment, Suggestions, SuggestionsContextProviderProps, SuggestionsContextProps, DropdownItem, SuggestionReducerProps};
+export enum LogMessages {
+  Error = 'Internal error, please try again later',
+  Added = 'Suggestion added successfully',
+  Edited = 'Suggestion edited successfully',
+  Deleted = 'Suggestion removed successfully',
+}
+
+export type { User, Comment, Suggestions, SuggestionsContextProviderProps, SuggestionsContextProps, DropdownItem, SuggestionReducerProps,
+  ApiContextData, ApiContextProps, ApiContextValue, ApiType, AddSuggestion };

@@ -10,10 +10,11 @@ import { DropdownItem, FilterOptions } from '../../models/types';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { useApi } from '../../store/ApiContext';
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
-  feedback: Yup.string().required('Can\'t be empty')
+  description: Yup.string().required('Can\'t be empty')
 });
 
 
@@ -27,15 +28,25 @@ const labelsMock = [
 ];
 
 const AddFeedback:React.FC = () =>{
+  const {addSuggestion} = useApi();
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       title: '',
-      feedback:''
+      description:''
     },
     validationSchema:validationSchema,
     onSubmit:(values)=>{
-      console.log(values);
+      const newComment = {
+        ...values,
+        category:selected?.label.toLowerCase() || 'all',
+        status:'suggestion',
+        upvotes:1,
+      };
+      addSuggestion(newComment).then(()=>{
+        navigate(-1);
+      });
+      //console.log('submit',newComment);
     }
   });
 
@@ -93,15 +104,15 @@ const AddFeedback:React.FC = () =>{
               <h4>Feedback Detail</h4>
               <p className='p5'>Include any specific comments on what should be improved, added, etc.</p>       
               <AutoResizableTextarea
-                id='feedback'
-                name='feedback'
+                id='description'
+                name='description'
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.feedback}
-                className={formik.touched.feedback && formik.errors.feedback ? 'input-error' : ''}
+                value={formik.values.description}
+                className={formik.touched.description && formik.errors.description ? 'input-error' : ''}
               />
-              {formik.touched.feedback && formik.errors.feedback ? (
-                <div className='error'>{formik.errors.feedback}</div>
+              {formik.touched.description && formik.errors.description ? (
+                <div className='error'>{formik.errors.description}</div>
               ) : null}
             </div>
           </div>

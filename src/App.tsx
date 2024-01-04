@@ -10,6 +10,7 @@ import FeedbackDetail from './Components/FeedbackDetail/FeedbackDetail';
 import './scss/main.scss';
 import AddFeedback from './Components/AddFeedback/AddFeedback';
 import EditFeedback from './Components/EditFeedback/EditFeedback';
+import { ApiProvider } from './store/ApiContext';
 
 function App() {
   return (
@@ -30,9 +31,11 @@ function App() {
 function Layout(){
   return (
     <section>
-      <SuggestionsContextProvider currentUser={data.currentUser} suggestions={data.productRequests}>
-        <Outlet />
-      </SuggestionsContextProvider>
+      <ApiProvider>
+        <SuggestionsContextProvider currentUser={data.currentUser} suggestions={data.productRequests}>
+          <Outlet />
+        </SuggestionsContextProvider>
+      </ApiProvider>
     </section>
   );
 }

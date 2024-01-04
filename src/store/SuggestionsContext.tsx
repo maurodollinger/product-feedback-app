@@ -1,11 +1,13 @@
 import React, { useEffect, useReducer } from 'react';
 import { FilterOptions, RoadmapStatusLowcap, SortConstants, SuggestionReducerProps, Suggestions, SuggestionsContextProps, SuggestionsContextProviderProps } from '../models/types';
+import { useApi } from './ApiContext';
 
 const ActionTypes = {
   UPDATE_LEAST_UPVOTES: SortConstants.LeastUpvotes as string,
   UPDATE_MOST_UPVOTES: SortConstants.MostUpvotes as string,
   UPDATE_LEAST_COMMENTS: SortConstants.LeastComments as string,
   UPDATE_MOST_COMMENTS: SortConstants.MostComments as string,
+  POPULATE_SUGGESTIONS: 'POPULATE_SUGGESTIONS',
   FILTER_BY_CATEGORY: 'FILTER_BY_CATEGORY',
   UPDATE_ROADMAP_LIST: 'UPDATE_ROADMAP_LIST'
 };
@@ -31,14 +33,16 @@ const initialUserContextValues: SuggestionsContextProps = {
 export const SuggestionsContext = React.createContext<SuggestionsContextProps>(initialUserContextValues);
 
 type Action =
-  | { type: typeof ActionTypes.UPDATE_LEAST_UPVOTES; category?: string }
-  | { type: typeof ActionTypes.UPDATE_MOST_UPVOTES; category?: string }
-  | { type: typeof ActionTypes.UPDATE_LEAST_COMMENTS; category?: string }
-  | { type: typeof ActionTypes.UPDATE_MOST_COMMENTS; category?: string }
-  | { type: typeof ActionTypes.FILTER_BY_CATEGORY; category: string }
+  | { type: typeof ActionTypes.POPULATE_SUGGESTIONS; category?: string; suggestions?:Suggestions[];}
+  | { type: typeof ActionTypes.UPDATE_LEAST_UPVOTES; category?: string; suggestions?:Suggestions[]; }
+  | { type: typeof ActionTypes.UPDATE_MOST_UPVOTES; category?: string; suggestions?:Suggestions[]; }
+  | { type: typeof ActionTypes.UPDATE_LEAST_COMMENTS; category?: string; suggestions?:Suggestions[]; }
+  | { type: typeof ActionTypes.UPDATE_MOST_COMMENTS; category?: string; suggestions?:Suggestions[]; }
+  | { type: typeof ActionTypes.FILTER_BY_CATEGORY; category: string; suggestions?:Suggestions[]; }
   | {
       type: typeof ActionTypes.UPDATE_ROADMAP_LIST;
-      category?: string 
+      category?: string;
+      suggestions?:Suggestions[];
       planned: Suggestions[];
       inProgress: Suggestions[];
       live: Suggestions[];
@@ -59,6 +63,8 @@ const suggestionsReducer = (state:SuggestionReducerProps,action:Action) => {
   const category = (action.category!==undefined) ? action.category : '';
 
   switch (action.type) {
+  case ActionTypes.POPULATE_SUGGESTIONS:
+    return { suggestions: action.suggestions, originalSuggestions:action.suggestions, currentCategory,  currentSort, roadmapList};
   case ActionTypes.UPDATE_LEAST_UPVOTES:
     return { suggestions: sortByUpvotes(suggestions, true), originalSuggestions, currentCategory, currentSort: ActionTypes.UPDATE_LEAST_UPVOTES, roadmapList};
   case ActionTypes.UPDATE_MOST_UPVOTES:
@@ -93,19 +99,39 @@ const suggestionsReducer = (state:SuggestionReducerProps,action:Action) => {
   }
 };
 
+const suggestionsPropsMock: SuggestionReducerProps = {
+  currentSort: ActionTypes.UPDATE_MOST_UPVOTES,
+  currentCategory: FilterOptions.All,
+  roadmapList: { planned: [], inProgress: [], live: [] },
+  suggestions: [],  
+  originalSuggestions: [], 
+};
+
+
 export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps> = (props) =>{
+  const { context } = useApi();
+  const { data, isLoading} = context ;
+  const localStorageData = JSON.parse(localStorage.getItem('product-feedback-app') || 'null');
 
-  const storedSuggestion:SuggestionReducerProps = JSON.parse(localStorage.getItem('suggestions') || 'null') || {
-    suggestions: props.suggestions,
-    originalSuggestions: props.suggestions,
-    currentSort:ActionTypes.UPDATE_MOST_UPVOTES,
-    currentCategory:FilterOptions.All,
-    roadmapList:{planned:[],inProgress:[],live:[]}
+  const storedSuggestionWithLocalStorage : SuggestionReducerProps = {
+    currentSort: localStorageData?.currentSort || suggestionsPropsMock.currentSort,
+    currentCategory: localStorageData?.currentCategory || suggestionsPropsMock.currentCategory,
+    roadmapList: localStorageData?.roadmapList || suggestionsPropsMock.roadmapList,
+    suggestions: localStorageData?.suggestions || suggestionsPropsMock.suggestions,
+    originalSuggestions: localStorageData?.originalSuggestions || suggestionsPropsMock.originalSuggestions,
   };
-
+  
   const [suggestionsState, dispatchSuggestionsAction] = useReducer(
-    suggestionsReducer as React.Reducer<SuggestionReducerProps, Action>,storedSuggestion
+    suggestionsReducer as React.Reducer<SuggestionReducerProps, Action>,storedSuggestionWithLocalStorage
   );  
+
+  useEffect(() => {
+    if (!isLoading) {
+      dispatchSuggestionsAction({type: ActionTypes.POPULATE_SUGGESTIONS, suggestions:data.suggestions});
+      dispatchSuggestionsAction({type:ActionTypes.FILTER_BY_CATEGORY,category:suggestionsState.currentCategory});
+      dispatchSuggestionsAction({type:suggestionsState.currentSort});
+    }
+  }, [isLoading,data]);
 
   const updateByLeastUpvotes = () =>{
     dispatchSuggestionsAction({ type: ActionTypes.UPDATE_LEAST_UPVOTES });
@@ -142,7 +168,7 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
   }, [suggestionsState.originalSuggestions]);
   
   useEffect(()=>{
-    localStorage.setItem('suggestions',JSON.stringify(suggestionsState));
+    localStorage.setItem('product-feedback-app',JSON.stringify(suggestionsState));
   },[suggestionsState]);
 
 
@@ -160,10 +186,11 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     filterByCategory,
   };
 
+
   return(
     <SuggestionsContext.Provider
       value={suggestionsCtx}>
-      {props.children}
+      {!isLoading && props.children}
     </SuggestionsContext.Provider>
   );
 };

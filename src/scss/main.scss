@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&display=swap');
 @import './variables.scss';
+@import './animations.scss';
 
 body{
     font-family: 'Jost', sans-serif;
@@ -268,5 +269,36 @@ input,textarea,button{
         position: absolute;
            bottom:1.75rem;
         right:1.5rem;
+    }
+}
+
+.log{
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 40rem;
+    width: fit-content;
+    padding: .6rem;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 0.9rem;
+    animation: fadeInAndUp 0.1s ease-in-out;
+    button{
+        height: 2rem;
+        padding: 0.4rem;
+        width: fit-content;
+        font-size: 0.8rem;
+    }
+    &.success{
+        background-color: white;
+    }
+    &.error{
+        background-color: #F49F85;
+        color:white;
     }
 }

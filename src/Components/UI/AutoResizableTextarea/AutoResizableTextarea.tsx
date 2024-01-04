@@ -17,6 +17,9 @@ const AutoResizableTextarea: React.FC<Props> = ({ onCharactersRemainingChange, i
   const [_value, setValue] = useState<string>(value);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  useEffect(()=>{
+    setValue(value);
+  },[value]);
 
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = event.target.value;
