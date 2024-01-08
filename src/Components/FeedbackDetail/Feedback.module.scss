@@ -87,7 +87,7 @@
     margin-top: 1.5rem;
     padding: 1.5rem 2rem;
 
-    >div {
+    >form>div {
         margin-top: 1rem;
         display: flex;
         justify-content: space-between;
@@ -150,10 +150,16 @@
 }
 
 .replyComment {
-    display: flex;
-    gap: 1rem;
-    margin-left: 4.5rem;
-
+    >form{
+        display: flex;
+        gap: 1rem;
+        margin-left: 4.5rem;    
+    }
+    div:last-child{
+        margin-top: 1rem;
+        margin-left: 4.5rem;   
+    }
+   
     button {
         max-width: 7.3125rem;
         margin-top: 1.5rem;

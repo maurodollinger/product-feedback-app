@@ -1,0 +1,337 @@
+{
+    "currentUser": {
+      "image": "./assets/user-images/image-zena.jpg",
+      "name": "Zena Kelley",
+      "username": "velvetround"
+    },
+    "productRequests": [
+        {
+            "id": "a6b89c54-031c-4c9f-8a5c-6b43b66014c8",
+            "title": "Add tags for solutions",
+            "category": "enhancement",
+            "upvotes": 112,
+            "status": "suggestion",
+            "description": "Easier to search for solutions based on a specific stack.",
+            "comments": [
+              {
+                "id": "5a90658b-8824-4e23-9a6c-99a8dbfdaa63",
+                "content": "Awesome idea! Trying to find framework-specific projects within the hubs can be tedious",
+                "user": {
+                  "image": "./assets/user-images/image-suzanne.jpg",
+                  "name": "Suzanne Chang",
+                  "username": "upbeat1811"
+                }
+              },
+              {
+                "id": "997d24c5-9f3e-4c8c-aa52-c67b6e19d2bb",
+                "content": "Please use fun, color-coded labels to easily identify them at a glance",
+                "user": {
+                  "image": "./assets/user-images/image-thomas.jpg",
+                  "name": "Thomas Hood",
+                  "username": "brawnybrave"
+                }
+              }
+            ]
+          },
+          {
+            "id": "e44020e1-30f3-4cb7-bd96-aa33d7b48e58",
+            "title": "Add a dark theme option",
+            "category": "feature",
+            "upvotes": 99,
+            "status": "suggestion",
+            "description": "It would help people with light sensitivities and who prefer dark mode.",
+            "comments": [
+              {
+                "id": "1f78a867-bd20-4e7e-9106-8e7c3471ad5d",
+                "content": "Also, please allow styles to be applied based on system preferences. I would love to be able to browse Frontend Mentor in the evening after my device’s dark mode turns on without the bright background it currently has.",
+                "user": {
+                  "image": "./assets/user-images/image-elijah.jpg",
+                  "name": "Elijah Moss",
+                  "username": "hexagon.bestagon"
+                }
+              },
+              {
+                "id": "ba696e5e-d26e-4a01-a255-2069e5e1d146",
+                "content": "Second this! I do a lot of late night coding and reading. Adding a dark theme can be great for preventing eye strain and the headaches that result. It’s also quite a trend with modern apps and apparently saves battery life.",
+                "user": {
+                  "image": "./assets/user-images/image-james.jpg",
+                  "name": "James Skinner",
+                  "username": "hummingbird1"
+                },
+                "replies": [
+                  {
+                    "id": "9c75f238-00a3-4d50-8377-8a7412fbf4ad",
+                    "content": "While waiting for dark mode, there are browser extensions that will also do the job. Search for 'dark theme' followed by your browser. There might be a need to turn off the extension for sites with naturally black backgrounds though.",
+                    "replyingTo": "hummingbird1",
+                    "user": {
+                      "image": "./assets/user-images/image-anne.jpg",
+                      "name": "Anne Valentine",
+                      "username": "annev1990"
+                    }
+                  },
+                  {
+                    "id": "ca8bce85-8e19-4a9b-a63e-92ea2a97c19f",
+                    "content": "Good point! Using any kind of style extension is great and can be highly customizable, like the ability to change contrast and brightness. I'd prefer not to use one of such extensions, however, for security and privacy reasons.",
+                    "replyingTo": "annev1990",
+                    "user": {
+                      "image": "./assets/user-images/image-ryan.jpg",
+                      "name": "Ryan Welles",
+                      "username": "voyager.344"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "b1c23a0d-8bb2-415a-aa8a-3b2fc16416e3",
+            "title": "Q&A within the challenge hubs",
+            "category": "feature",
+            "upvotes": 65,
+            "status": "suggestion",
+            "description": "Challenge-specific Q&A would make for easy reference.",
+            "comments": [
+              {
+                "id": "b7a97ccf-141d-4f74-8d06-b96a594ad231",
+                "content": "Much easier to get answers from devs who can relate, since they've either finished the challenge themselves or are in the middle of it.",
+                "user": {
+                  "image": "./assets/user-images/image-george.jpg",
+                  "name": "George Partridge",
+                  "username": "soccerviewer8"
+                }
+              }
+            ]
+          },
+          {
+            "id": "e7e713c5-e5b4-4a9a-8f0a-94d2a548568e",
+            "title": "Add image/video upload to feedback",
+            "category": "enhancement",
+            "upvotes": 51,
+            "status": "suggestion",
+            "description": "Images and screencasts can enhance comments on solutions.",
+            "comments": [
+              {
+                "id": "3d1c1a4a-9991-4f05-b87c-f6df6172847c",
+                "content": "Right now, there is no ability to add images while giving feedback which isn't ideal because I have to use another app to show what I mean",
+                "user": {
+                  "image": "./assets/user-images/image-javier.jpg",
+                  "name": "Javier Pollard",
+                  "username": "warlikeduke"
+                }
+              },
+              {
+                "id": "e3de74c0-325a-4a8a-8f7c-1d8cc34f0510",
+                "content": "Yes, I'd like to see this as well. Sometimes I want to add a short video or gif to explain the site's behavior.",
+                "user": {
+                  "image": "./assets/user-images/image-roxanne.jpg",
+                  "name": "Roxanne Travis",
+                  "username": "peppersprime32"
+                }
+              }
+            ]
+          },
+          {
+            "id": "925c415a-d34f-4bf4-9e32-bc3d0ae3a00b",
+            "title": "Ability to follow others",
+            "category": "feature",
+            "upvotes": 42,
+            "status": "suggestion",
+            "description": "Stay updated on comments and solutions other people post.",
+            "comments": [
+              {
+                "id": "6aae7a85-fafe-470d-8695-c395195f4b18",
+                "content": "I also want to be notified when devs I follow submit projects on FEM. Is in-app notification also in the pipeline?",
+                "user": {
+                  "image": "./assets/user-images/image-victoria.jpg",
+                  "name": "Victoria Mejia",
+                  "username": "arlen_the_marlin"
+                },
+                "replies": [
+                  {
+                    "id": "a0a03e5a-22fc-44c0-b53c-e2e0be9ce648",
+                    "content": "Bumping this. It would be good to have a tab with a feed of people I follow so it's easy to see what challenges they’ve done lately. I learn a lot by reading good developers' code.",
+                    "replyingTo": "arlen_the_marlin",
+                    "user": {
+                      "image": "./assets/user-images/image-zena.jpg",
+                      "name": "Zena Kelley",
+                      "username": "velvetround"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "ad477915-1e4e-4db1-80a8-eb84a9a20b5f",
+                "content": "I've been saving the profile URLs of a few people and I check what they’ve been doing from time to time. Being able to follow them solves that",
+                "user": {
+                  "image": "./assets/user-images/image-jackson.jpg",
+                  "name": "Jackson Barker",
+                  "username": "countryspirit"
+                }
+              }
+            ]
+          },
+          {
+            "id": "24a342a9-7ae4-4964-9b46-4b0677a660c5",
+            "title": "Preview images not loading",
+            "category": "bug",
+            "upvotes": 3,
+            "status": "suggestion",
+            "description": "Challenge preview images are missing when you apply a filter."
+          },
+          {
+            "id": "a2357b2e-c77c-46d1-9d16-bad95ee7023b",
+            "title": "More comprehensive reports",
+            "category": "feature",
+            "upvotes": 123,
+            "status": "planned",
+            "description": "It would be great to see a more detailed breakdown of solutions.",
+            "comments": [
+              {
+                "id": "5bbfc637-f32b-4b72-9f70-ae7731c2b20d",
+                "content": "This would be awesome! It would be so helpful to see an overview of my code in a way that makes it easy to spot where things could be improved.",
+                "user": {
+                  "image": "./assets/user-images/image-victoria.jpg",
+                  "name": "Victoria Mejia",
+                  "username": "arlen_the_marlin"
+                }
+              },
+              {
+                "id": "ef875a0d-3e2f-43fb-954c-2b119dca3b35",
+                "content": "Yeah, this would be really good. I'd love to see deeper insights into my code!",
+                "user": {
+                  "image": "./assets/user-images/image-jackson.jpg",
+                  "name": "Jackson Barker",
+                  "username": "countryspirit"
+                }
+              }
+            ]
+          },
+          {
+            "id": "24be9c63-8902-4e7b-9bd9-61e5b4a82ed2",
+            "title": "Learning paths",
+            "category": "feature",
+            "upvotes": 28,
+            "status": "planned",
+            "description": "Sequenced projects for different goals to help people improve.",
+            "comments": [
+              {
+                "id": "491cfd8e-d166-459a-9e2f-1ec4c1c09d15",
+                "content": "Having a path through the challenges that I could follow would be brilliant! Sometimes I'm not sure which challenge would be the best next step to take. So this would help me navigate through them!",
+                "user": {
+                  "image": "./assets/user-images/image-george.jpg",
+                  "name": "George Partridge",
+                  "username": "soccerviewer8"
+                }
+              }
+            ]
+          },
+          {
+            "id": "828540c4-76e1-4a38-bdb5-1e4e2b401b6f",
+            "title": "One-click portfolio generation",
+            "category": "feature",
+            "upvotes": 62,
+            "status": "in-progress",
+            "description": "Add ability to create professional looking portfolio from profile.",
+            "comments": [
+              {
+                "id": "7a1f6c45-628a-4fcd-a135-03b03d637bbe",
+                "content": "I haven't built a portfolio site yet, so this would be really helpful. Might it also be possible to choose layout and colour themes?!",
+                "user": {
+                  "image": "./assets/user-images/image-ryan.jpg",
+                  "name": "Ryan Welles",
+                  "username": "voyager.344"
+                }
+              }
+            ]
+          },
+          {
+            "id": "ef48e6bc-66b2-4f3b-896a-6f5392bf46b1",
+            "title": "Bookmark challenges",
+            "category": "feature",
+            "upvotes": 31,
+            "status": "in-progress",
+            "description": "Be able to bookmark challenges to take later on.",
+            "comments": [
+              {
+                "id": "add4b694-cb52-4a43-bec5-2dd6e3d66cfb",
+                "content": "This would be great! At the moment, I'm just starting challenges in order to save them. But this means the My Challenges section is overflowing with projects and is hard to manage. Being able to bookmark challenges would be really helpful.",
+                "user": {
+                  "image": "./assets/user-images/image-suzanne.jpg",
+                  "name": "Suzanne Chang",
+                  "username": "upbeat1811"
+                }
+              }
+            ]
+          },
+          {
+            "id": "4562d5b7-81a2-4bf0-9f65-913e3fbb9822",
+            "title": "Animated solution screenshots",
+            "category": "bug",
+            "upvotes": 9,
+            "status": "in-progress",
+            "description": "Screenshots of solutions with animations don’t display correctly."
+          },
+          {
+            "id": "dc8024e0-9467-4e25-8d0e-8b375c96a46a",
+            "title": "Add micro-interactions",
+            "category": "enhancement",
+            "upvotes": 71,
+            "status": "live",
+            "description": "Small animations at specific points can add delight.",
+            "comments": [
+              {
+                "id": "be6c77a7-3569-4cd7-bec2-1d598187a1ea",
+                "content": "I'd love to see this! It always makes me so happy to see little details like these on websites.",
+                "user": {
+                  "image": "./assets/user-images/image-victoria.jpg",
+                  "name": "Victoria Mejia",
+                  "username": "arlen_the_marlin"
+                },
+                "replies": [
+                  {
+                    "id": "9dd07fb3-5c4b-493b-96d0-1d3608a522f2",
+                    "content": "Me too! I'd also love to see celebrations at specific points as well. It would help people take a moment to celebrate their achievements!",
+                    "replyingTo": "arlen_the_marlin",
+                    "user": {
+                      "image": "./assets/user-images/image-suzanne.jpg",
+                      "name": "Suzanne Chang",
+                      "username": "upbeat1811"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "d5e4a6f3-12d3-4b5e-a7c8-91c2d3a7b8a9",
+            "title": "Add micro-interactions",
+            "category": "enhancement",
+            "upvotes": 71,
+            "status": "live",
+            "description": "Small animations at specific points can add delight.",
+            "comments": [
+              {
+                "id": "a4b3c2d1-d123-4b56-a78c-9d0e1f2a3b4c",
+                "content": "I'd love to see this! It always makes me so happy to see little details like these on websites.",
+                "user": {
+                  "image": "./assets/user-images/image-victoria.jpg",
+                  "name": "Victoria Mejia",
+                  "username": "arlen_the_marlin"
+                },
+                "replies": [
+                  {
+                    "id": "a1b2c3d4-0123-4567-89ab-cdef12345678",
+                    "content": "Me too! I'd also love to see celebrations at specific points as well. It would help people take a moment to celebrate their achievements!",
+                    "replyingTo": "a4b3c2d1-d123-4b56-a78c-9d0e1f2a3b4c",
+                    "user": {
+                      "image": "./assets/user-images/image-suzanne.jpg",
+                      "name": "Suzanne Chang",
+                      "username": "upbeat1811"
+                    }
+                  }
+                ]
+              }
+            ]
+          }          
+    ]
+  }

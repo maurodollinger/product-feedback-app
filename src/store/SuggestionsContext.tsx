@@ -27,7 +27,7 @@ const initialUserContextValues: SuggestionsContextProps = {
   updateByMostUpvotes:()=>{/**/},
   updateByLeastComments:()=>{/**/},
   updateByMostComments:() =>{/**/},
-  filterByCategory:()=>{/**/}
+  updateByCategory:()=>{/**/}
 };
 
 export const SuggestionsContext = React.createContext<SuggestionsContextProps>(initialUserContextValues);
@@ -56,12 +56,13 @@ const sortByCommentsLength = (items: Suggestions[], ascending: boolean) =>
   [...items].sort((a, b) => (ascending ? (a.comments?.length ?? 0) - (b.comments?.length ?? 0) : (b.comments?.length ?? 0) - (a.comments?.length ?? 0)));
 
 const filterByCategory = (items: Suggestions[], category: string) =>
-  category === FilterOptions.All.toLowerCase() ? items : items.filter((item) => item.category.toLowerCase() === category.toLowerCase());
+  category.toLowerCase() === FilterOptions.All.toLowerCase() ? items : items.filter((item) => item.category.toLowerCase() === category.toLowerCase());
 
 const suggestionsReducer = (state:SuggestionReducerProps,action:Action) => {
   const { suggestions, originalSuggestions, currentSort, currentCategory, roadmapList } = state;
-  const category = (action.category!==undefined) ? action.category : '';
+  const category = (action.category!==undefined) ? action.category : 'suggestion';
 
+  //console.log(action.type,state);
   switch (action.type) {
   case ActionTypes.POPULATE_SUGGESTIONS:
     return { suggestions: action.suggestions, originalSuggestions:action.suggestions, currentCategory,  currentSort, roadmapList};
@@ -100,8 +101,8 @@ const suggestionsReducer = (state:SuggestionReducerProps,action:Action) => {
 };
 
 const suggestionsPropsMock: SuggestionReducerProps = {
-  currentSort: ActionTypes.UPDATE_MOST_UPVOTES,
-  currentCategory: FilterOptions.All,
+  currentSort: ActionTypes.UPDATE_MOST_UPVOTES as string,
+  currentCategory: FilterOptions.All as string,
   roadmapList: { planned: [], inProgress: [], live: [] },
   suggestions: [],  
   originalSuggestions: [], 
@@ -116,9 +117,9 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
   const storedSuggestionWithLocalStorage : SuggestionReducerProps = {
     currentSort: localStorageData?.currentSort || suggestionsPropsMock.currentSort,
     currentCategory: localStorageData?.currentCategory || suggestionsPropsMock.currentCategory,
-    roadmapList: localStorageData?.roadmapList || suggestionsPropsMock.roadmapList,
-    suggestions: localStorageData?.suggestions || suggestionsPropsMock.suggestions,
-    originalSuggestions: localStorageData?.originalSuggestions || suggestionsPropsMock.originalSuggestions,
+    roadmapList: suggestionsPropsMock.roadmapList,
+    suggestions: suggestionsPropsMock.suggestions,
+    originalSuggestions:  suggestionsPropsMock.originalSuggestions,
   };
   
   const [suggestionsState, dispatchSuggestionsAction] = useReducer(
@@ -128,8 +129,7 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
   useEffect(() => {
     if (!isLoading) {
       dispatchSuggestionsAction({type: ActionTypes.POPULATE_SUGGESTIONS, suggestions:data.suggestions});
-      dispatchSuggestionsAction({type:ActionTypes.FILTER_BY_CATEGORY,category:suggestionsState.currentCategory});
-      dispatchSuggestionsAction({type:suggestionsState.currentSort});
+      updateByCategory(suggestionsState.currentCategory);
     }
   }, [isLoading,data]);
 
@@ -149,7 +149,7 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     dispatchSuggestionsAction({ type: ActionTypes.UPDATE_MOST_COMMENTS });
   };
 
-  const filterByCategory = (category:string) =>{
+  const updateByCategory = (category:string) =>{
     dispatchSuggestionsAction({ type:ActionTypes.FILTER_BY_CATEGORY,category});
     dispatchSuggestionsAction({ type:suggestionsState.currentSort} );
   };
@@ -160,7 +160,7 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     const live = suggestionsState.originalSuggestions.filter((item) => item.status === RoadmapStatusLowcap.Live);
 
     dispatchSuggestionsAction({
-      type: 'UPDATE_ROADMAP_LIST',
+      type: ActionTypes.UPDATE_ROADMAP_LIST,
       planned,
       inProgress,
       live,
@@ -168,9 +168,12 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
   }, [suggestionsState.originalSuggestions]);
   
   useEffect(()=>{
-    localStorage.setItem('product-feedback-app',JSON.stringify(suggestionsState));
+    const storage = {
+      currentSort:suggestionsState.currentSort,
+      currentCategory:suggestionsState.currentCategory
+    };
+    localStorage.setItem('product-feedback-app',JSON.stringify(storage));
   },[suggestionsState]);
-
 
   const suggestionsCtx = {
     currentUser:props.currentUser,
@@ -183,7 +186,7 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     updateByMostUpvotes,
     updateByLeastComments,
     updateByMostComments,
-    filterByCategory,
+    updateByCategory,
   };
 
 

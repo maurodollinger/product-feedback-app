@@ -6,7 +6,7 @@ interface User {
 }
 
 interface Comment {
-  id: number;
+  id: string;
   content: string;
   user: User;
   replyingTo?: string;
@@ -14,7 +14,7 @@ interface Comment {
 }
 
 interface Suggestions {
-  id: number;
+  id: string;
   title: string;
   category: string;
   upvotes: number;
@@ -35,7 +35,7 @@ interface AddSuggestion{
 interface SuggestionsContextProviderProps {
   children: React.ReactNode;
   currentUser: User;
-  suggestions: Suggestions[];
+  ///suggestions: Suggestions[];
 }
 
 interface SuggestionsContextProps {
@@ -49,7 +49,7 @@ interface SuggestionsContextProps {
   updateByMostUpvotes: () => any;
   updateByLeastComments: () => any;
   updateByMostComments: () => any;
-  filterByCategory: (category: string) => any;
+  updateByCategory: (category: string) => any;
 }
 
 interface DropdownItem {
@@ -88,13 +88,20 @@ interface ApiContextValue {
   addSuggestion: (newData: AddSuggestion) => Promise<void>;
   deleteSuggestion: (id: string) => Promise<void>;
   updateSuggestion: (id:string, updatedData:Suggestions) => Promise<void>;
+  upvoteSuggestion: (id: string) => Promise<void>;
+  addComment: (id:string, comment:string) => Promise<void>;
+  addReply: (idArray:string[], comment:string, replyingTo?:string) => Promise<void>;
 }
 
 interface ApiType {
   getData: () => Promise<ApiContextProps>;
   addSuggestion: (newData: AddSuggestion) => Promise<void>;
+  getNodeById: (id: string, path?:string) => Promise<string>;
   deleteSuggestion: (id: string) => Promise<void>;
   updateSuggestion: (id:string, updatedData:Suggestions) => Promise<void>;
+  upvoteSuggestion: (id: string) => Promise<void>;
+  addComment: (id:string, newData:Comment) => Promise<void>;
+  addReply: (idArray:string[], newData:Comment) => Promise<void>;
   //listenAuthState: (callback: (user: User | null) => void) => void;
 }
 
@@ -140,6 +147,8 @@ export enum LogMessages {
   Added = 'Suggestion added successfully',
   Edited = 'Suggestion edited successfully',
   Deleted = 'Suggestion removed successfully',
+  Updated = 'Suggestion has been updated succesfully',
+  CommentAdded = 'Comment has been added succesfully'
 }
 
 export type { User, Comment, Suggestions, SuggestionsContextProviderProps, SuggestionsContextProps, DropdownItem, SuggestionReducerProps,

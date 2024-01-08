@@ -1,8 +1,8 @@
 // Importa las funciones necesarias de los SDKs de Firebase
 import { initializeApp } from 'firebase/app';
 //import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { getDatabase, ref, get, set, remove } from 'firebase/database';
-import { ApiType, ApiContextProps, AddSuggestion, Suggestions } from '../models/types';
+import { getDatabase, ref, get, set,  runTransaction,  query, remove } from 'firebase/database';
+import { ApiType, ApiContextProps, AddSuggestion, Suggestions, Comment } from '../models/types';
 
 // Configuración de tu aplicación de Firebase
 const firebaseConfig = {
@@ -30,31 +30,97 @@ export const firebaseApi: ApiType = {
       currentUser: snapshot.child('currentUser').val(),
       suggestions: snapshot.child('productRequests').val(),
     };
-  
+    
     return data;
   },
   
-  addSuggestion: async (newData: AddSuggestion) => {
-    const dataRef = ref(db, nodeSuggestions);
-    // Obtén el snapshot del nodo y conviértelo a un objeto de JavaScript
-    const snapshot = await get(dataRef);
-    const dataObject = snapshot.val();
-    const newRegisterId = Object.keys(dataObject).length;
-    newData.id = (newRegisterId+1).toString(); 
+  addSuggestion: async (newData: AddSuggestion) => {    
+    await set(ref(db, `${nodeSuggestions}/${newData.id}`), newData);
+  },
   
-    await set(ref(db, `${nodeSuggestions}/${newRegisterId}`), newData);
+
+  getNodeById: async (id: string, path = '') => {
+    const dataRef = query(ref(db, `${nodeSuggestions}${path}`));
+    const querySnapshot = await get(dataRef);
+    // console.log(`${nodeSuggestions}${path}`);
+    let result = '';
+
+    querySnapshot.forEach((childSnapshot) => {
+      const suggestion = childSnapshot.val();
+      if (suggestion.id === id) {
+        const key = childSnapshot.key;
+        result = key;
+      }
+    });
+
+    return result;
   },
   
   deleteSuggestion: async (id: string) => {
-    const dataRef = ref(db, `${nodeSuggestions}/${id}`);
-    await remove(dataRef);
+    const key = await firebaseApi.getNodeById(id);
+    const nodeRef = ref(db, `${nodeSuggestions}/${key}`);
+    await remove(nodeRef);
+  },
+  
+  updateSuggestion : async (id: string, updatedData: Suggestions) => {
+    const key = await firebaseApi.getNodeById(id);
+    const nodeRef = ref(db, `${nodeSuggestions}/${key}`);
+    await set(nodeRef, updatedData);
+
   },
 
-  updateSuggestion: async (id: string, updatedData: Suggestions) => {
-    const dataRef = ref(db, `${nodeSuggestions}/${id}`);
-    console.log(dataRef,updatedData);
-    await set(dataRef, updatedData);
+  upvoteSuggestion: async (id:string) =>{
+    const key = await firebaseApi.getNodeById(id);
+    const nodeRef = ref(db, `${nodeSuggestions}/${key}`);
+
+    await runTransaction(nodeRef, (currentData) => {
+      if (currentData) {
+        currentData.upvotes = (currentData.upvotes || 0) + 1;
+      }        
+      return currentData;
+    });
+    
   },
+
+  addComment: async (id:string, newData:Comment)=>{
+    try {
+      const key = await firebaseApi.getNodeById(id);
+
+      const nodeRef = ref(db, `${nodeSuggestions}/${key}/comments`);
+
+      await runTransaction(nodeRef,(currentData) =>{
+        if (!Array.isArray(currentData)) {
+          currentData = [];
+        }
+        currentData.push(newData);
+
+        return currentData;
+      });
+    }
+    catch (error) {
+      throw Error;
+    }
+  },
+
+  addReply: async (idArray:string[], newData:Comment)=>{
+    try {
+      const key1 = await firebaseApi.getNodeById(idArray[0]);
+
+      const key2 = await firebaseApi.getNodeById(idArray[1],`/${key1}/comments/`);
+
+      const nodeRef = ref(db, `${nodeSuggestions}/${key1}/comments/${key2}/replies`);
+      await runTransaction(nodeRef,(currentData) =>{
+        if (!Array.isArray(currentData)) {
+          currentData = [];
+        }
+        currentData.push(newData);
+        return currentData;
+      });
+    }
+    catch (error) {
+      throw Error;
+    }
+  }
   /*
   listenAuthState: (callback: (user: User | null) => void) => {
     onAuthStateChanged(auth, (user) => {

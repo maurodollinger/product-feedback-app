@@ -13,7 +13,7 @@ const Log: React.FC<LogProps> = ({ message,logType,onClose }) => {
   useEffect(()=>{
     const timeoutId = setTimeout(()=>{
       onClose();
-    },30000);
+    },3000);
 
     return () => {
       clearTimeout(timeoutId);

@@ -6,7 +6,7 @@ type Props = {
     comment:Comment,
     className?:string,
     children?:React.ReactNode,
-    openReply:(id:number)=>void
+    openReply:(id:string)=>void
 }
 
 const FeedbackComment:React.FC<Props> = ({comment,className,children,openReply}) =>{

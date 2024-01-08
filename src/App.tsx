@@ -32,7 +32,7 @@ function Layout(){
   return (
     <section>
       <ApiProvider>
-        <SuggestionsContextProvider currentUser={data.currentUser} suggestions={data.productRequests}>
+        <SuggestionsContextProvider currentUser={data.currentUser} >
           <Outlet />
         </SuggestionsContextProvider>
       </ApiProvider>

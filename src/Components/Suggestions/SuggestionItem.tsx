@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '../UI/Card/Card';
 import Counter from '../UI/Counter/Counter';
-import { Suggestions } from '../../models/types';
+import { FilterOptions, Suggestions } from '../../models/types';
 import styles from './Suggestion.module.scss';
 import { ReactComponent as IconComments } from '../../assets/shared/icon-comments.svg';
 import { useNavigate } from 'react-router-dom';
+import { useApi } from '../../store/ApiContext';
 
 type Props = {
   request:Suggestions,
@@ -13,7 +14,15 @@ type Props = {
 
 const SuggestionItem:React.FC<Props> = ({request, isClickable=true}) =>{
   const [isHovered, setIsHovered] = useState(false);
+  const [isUpvoted, setIsUpvoted] = useState(false);
+  const [currentUpvotes, setCurrentUpvotes] = useState(request.upvotes);
+
   const navigate = useNavigate();
+  const { upvoteSuggestion} = useApi();
+
+  useEffect(() => {
+    setCurrentUpvotes(request.upvotes);
+  }, [request.upvotes]);
 
   const handleHover = () => {
     setIsHovered(true);
@@ -29,16 +38,39 @@ const SuggestionItem:React.FC<Props> = ({request, isClickable=true}) =>{
 
   const handleCounterClick = (event: React.MouseEvent) => {
     event.stopPropagation(); 
+    upvoteSuggestion(request.id.toString());
+    setIsUpvoted(true);
+  };
+
+  const getCategoryLabel = (category: string): string => {
+    const lowercaseCategory = category.toLowerCase();
+  
+    switch (lowercaseCategory) {
+    case FilterOptions.All.toLowerCase():
+      return FilterOptions.All;
+    case FilterOptions.UI.toLowerCase():
+      return FilterOptions.UI;
+    case FilterOptions.UX.toLowerCase():
+      return FilterOptions.UX;
+    case FilterOptions.Enhancement.toLowerCase():
+      return FilterOptions.Enhancement;
+    case FilterOptions.Bug.toLowerCase():
+      return FilterOptions.Bug;
+    case FilterOptions.Feature.toLowerCase():
+      return FilterOptions.Feature;
+    default:
+      return category;
+    }
   };
 
   return (
     <Card className={`${styles.suggestionItem} ${isClickable ? styles.isClickable : ''}`} onClick={isClickable ? handleNavigation : undefined}>
-      <Counter upvotes={request.upvotes} onMouseOver={handleHover} onMouseLeave={handleLeave} onCounterClick={handleCounterClick}/>
+      <Counter upvotes={currentUpvotes} disabled={isUpvoted} onMouseOver={handleHover} onMouseLeave={handleLeave} onCounterClick={handleCounterClick}/>
       <div>
         <h3 className={isHovered ? styles.isHovered : ''}>{request.title}</h3>
         <p className='p4'>{request.description}</p>
         <div className={`${styles.tagDiv} tag`}>
-          {request.category}
+          {getCategoryLabel(request.category)}
         </div>
       </div>
       <div className='commentsDiv'>

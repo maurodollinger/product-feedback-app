@@ -272,6 +272,10 @@ input,textarea,button{
     }
 }
 
+#log{
+    position: relative;
+}
+
 .log{
     position: fixed;
     top: 1rem;
@@ -287,7 +291,9 @@ input,textarea,button{
     gap:1rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     font-size: 0.9rem;
-    animation: fadeInAndUp 0.1s ease-in-out;
+    opacity: 0; 
+    animation: fadeInAndUp 0.5s ease-in-out forwards;
+    animation-delay: 0.2s;
     button{
         height: 2rem;
         padding: 0.4rem;

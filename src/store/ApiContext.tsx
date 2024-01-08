@@ -1,9 +1,9 @@
 // ApiContext.js
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Api } from '../api/api' ;
-import { ApiContextData, ApiContextValue, AddSuggestion, LogMessages, Suggestions} from '../models/types';
+import { ApiContextData, ApiContextValue, AddSuggestion, LogMessages, Suggestions, ApiContextProps} from '../models/types';
 import Log from '../Components/UI/Log/Log';
-
+import { v4 as uuidv4 } from 'uuid';
 
 const initialApiContext: ApiContextValue = {
   context:{
@@ -19,7 +19,10 @@ const initialApiContext: ApiContextValue = {
   },
   addSuggestion:async (): Promise<void> => {/* */},
   deleteSuggestion:async (): Promise<void> => {/* */},
-  updateSuggestion:async (): Promise<void> => {/* */}
+  updateSuggestion:async (): Promise<void> => {/* */},
+  upvoteSuggestion:async (): Promise<void> => {/* */},
+  addComment:async (): Promise<void> => {/* */},
+  addReply:async (): Promise<void> => {/* */},
 };
 
 const ApiContext:React.Context<ApiContextValue> = createContext(initialApiContext);
@@ -34,19 +37,36 @@ export const ApiProvider:React.FC<{children:React.ReactNode}> = ({ children }) =
   });
 
   useEffect(() => {
-    Api.getData().then((result) => {
-      setCtxData({data:result,isLoading:false});
-    });
+    getData();
   }, []);
 
-  const addSuggestion = async (newData: AddSuggestion) => {
+  const setAndCleanData = (result: ApiContextProps) =>{
+    const cleanSuggestions = Object.values(result.suggestions).filter(item => item !== undefined);
+    const cleanData = {...result,suggestions:cleanSuggestions};
+    setCtxData({data:cleanData,isLoading:false});
+  };
+
+  const getData = async () =>{
+    await Api.getData().then((result) => {
+      setAndCleanData(result);
+    });
+  };
+
+  const addSuggestion = async (data: AddSuggestion) => {
     try{
-      setCtxData((prevData) => ({ ...prevData, isLoading: true }));
-      await Api.addSuggestion(newData);
-      // Actualizar los datos después de añadir la sugerencia
-      const updatedData = await Api.getData();
-      setCtxData({ data: updatedData, isLoading: false });
-      setLogState({ message: LogMessages.Added, logType:'success', visible: true });
+      //setCtxData((prevData) => ({ ...prevData, isLoading: true }));
+      const newData = {
+        ...data,
+        id:uuidv4(),      
+      };
+      await Api.addSuggestion(newData).then(()=>{
+        Api.getData().then((result)=>{
+          setAndCleanData(result);
+          setLogState({ message: LogMessages.Added, logType:'success', visible: true });
+        });
+      }).catch(()=>{
+        setLogState({ message: LogMessages.Error,logType:'error', visible: true });
+      });
 
     }
     catch(error:any){
@@ -56,11 +76,15 @@ export const ApiProvider:React.FC<{children:React.ReactNode}> = ({ children }) =
 
   const deleteSuggestion = async (id:string) => {
     try{
-      setCtxData((prevData) => ({ ...prevData, isLoading: true }));
-      await Api.deleteSuggestion(id);
-      const updatedData = await Api.getData();
-      setCtxData({ data: updatedData, isLoading: false });
-      setLogState({ message: LogMessages.Deleted, logType:'success', visible: true });
+      //setCtxData((prevData) => ({ ...prevData, isLoading: true }));
+      await Api.deleteSuggestion(id).then(()=>{
+        Api.getData().then((result)=>{
+          setAndCleanData(result);
+          setLogState({ message: LogMessages.Deleted, logType:'success', visible: true });
+        });
+      }).catch(()=>{
+        setLogState({ message: LogMessages.Error,logType:'error', visible: true });
+      });
     }
     catch(error:any){
       setLogState({ message: LogMessages.Error,logType:'error', visible: true });
@@ -69,11 +93,71 @@ export const ApiProvider:React.FC<{children:React.ReactNode}> = ({ children }) =
 
   const updateSuggestion = async (id:string, newData: Suggestions) => {
     try{
-      setCtxData((prevData) => ({ ...prevData, isLoading: true }));
-      await Api.updateSuggestion(id,newData);
-      const updatedData = await Api.getData();
-      setCtxData({ data: updatedData, isLoading: false });
-      setLogState({ message: LogMessages.Edited, logType:'success', visible: true });
+      await Api.updateSuggestion(id,newData).then(()=>{
+        Api.getData().then((result)=>{
+          setAndCleanData(result);
+          setLogState({ message: LogMessages.Edited, logType:'success', visible: true });
+        });
+      }).catch(()=>{
+        setLogState({ message: LogMessages.Error,logType:'error', visible: true });
+      });
+    }
+    catch(error:any){
+      setLogState({ message: LogMessages.Error,logType:'error', visible: true });
+    }
+  };
+
+  const upvoteSuggestion = async (id:string) =>{
+    try{
+      await Api.upvoteSuggestion(id).then(()=>{
+        Api.getData().then((result)=>{
+          setAndCleanData(result);
+          setLogState({ message: LogMessages.Updated, logType:'success', visible: true });
+        });
+      }).catch(()=>{
+        setLogState({ message: LogMessages.Error,logType:'error', visible: true });
+      });
+    }
+    catch(error:any){
+      setLogState({ message: LogMessages.Error,logType:'error', visible: true });
+    }
+  };
+
+  const addComment = async (id:string,comment:string) =>{
+    try{
+      const newData = {
+        id:uuidv4(), 
+        content:comment,
+        user:ctxData.data.currentUser
+      };
+      await Api.addComment(id,newData).then(()=>{
+        Api.getData().then((result)=>{
+          setAndCleanData(result);
+          setLogState({ message: LogMessages.CommentAdded, logType:'success', visible: true });
+        });
+      }).catch(()=>{
+        setLogState({ message: LogMessages.Error,logType:'error', visible: true });
+      });
+    }
+    catch(error:any){
+      setLogState({ message: LogMessages.Error,logType:'error', visible: true });
+    }
+  }; 
+
+  const addReply = async (arrayId:string[],comment:string,replyingTo?:string) =>{
+    try{
+      const newData = {
+        id:uuidv4(),
+        content:comment,
+        user:ctxData.data.currentUser,
+        ...(replyingTo !== undefined && { replyingTo: replyingTo }),
+      };
+      await Api.addReply(arrayId,newData).then(()=>{
+        Api.getData().then((result)=>{
+          setAndCleanData(result);
+          setLogState({ message: LogMessages.CommentAdded, logType:'success', visible: true });
+        });
+      });
     }
     catch(error:any){
       setLogState({ message: LogMessages.Error,logType:'error', visible: true });
@@ -81,12 +165,14 @@ export const ApiProvider:React.FC<{children:React.ReactNode}> = ({ children }) =
   };
 
 
-
   const apiContextValue: ApiContextValue = {
     context:ctxData,
     addSuggestion,
     deleteSuggestion,
-    updateSuggestion
+    updateSuggestion,
+    upvoteSuggestion,
+    addComment,
+    addReply
   };
 
   return (

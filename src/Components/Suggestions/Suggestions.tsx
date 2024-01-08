@@ -36,13 +36,13 @@ export const EmptySuggestions = () =>{
 };
 
 const Suggestions:React.FC = () => {
-  const {suggestions, filterByCategory, roadmapList, currentCategory} = useContext(SuggestionsContext);
+  const {suggestions, updateByCategory, roadmapList, currentCategory} = useContext(SuggestionsContext);
   const [categories, setCategories] = useState(labelsMock);
   const [isBarMobileActive, setIsBarMobileActive] = useState(false);
   const navigate = useNavigate();
 
   const handleTag = (id:number,label:string) =>{
-    filterByCategory(label.toLowerCase());
+    updateByCategory(label.toLowerCase());
     const updatedCategories = categories.map(l=>
       l.id === id ? { ...l, selected: true } : { ...l, selected: false }
     );
@@ -82,7 +82,7 @@ const Suggestions:React.FC = () => {
   useEffect(()=>{
     if(currentCategory!==''){
       const updatedCategories = categories.map(l=>
-        l.value.toLowerCase() === currentCategory ? { ...l, selected: true } : { ...l, selected: false }
+        l.value.toLowerCase() === currentCategory.toLowerCase() ? { ...l, selected: true } : { ...l, selected: false }
       );
       setCategories(updatedCategories);
     }   
@@ -116,7 +116,7 @@ const Suggestions:React.FC = () => {
             <div className={styles.requestsContainer}>      
               {
                 suggestions.map((pr)=>(
-                  <SuggestionItem request={pr} key={pr.id}/>
+                  pr && <SuggestionItem request={pr} key={pr.id}/>
                 ))
               }
             </div>

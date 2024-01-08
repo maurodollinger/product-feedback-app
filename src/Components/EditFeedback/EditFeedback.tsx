@@ -6,7 +6,7 @@ import AutoResizableTextarea from '../UI/AutoResizableTextarea/AutoResizableText
 import { ReactComponent as PlusIconImage } from '../../assets/shared/icon-new-feedback.svg';
 import Button from '../UI/Button/Button';
 import Dropdown from '../UI/Dropdown/Dropdown';
-import { DropdownItem, FilterOptions, RoadmapStatus, Suggestions } from '../../models/types';
+import {  FilterOptions, RoadmapStatus, Suggestions } from '../../models/types';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -20,19 +20,19 @@ const validationSchema = Yup.object().shape({
 
 
 const labelsMock = [
-  {label: FilterOptions.All as string,value:'',id:1, selected:true},
-  {label: FilterOptions.UI as string,value:'',id:2, selected:false},
-  {label: FilterOptions.UX as string,value:'',id:3, selected:false},
-  {label: FilterOptions.Enhancement as string,value:'',id:4, selected:false},
-  {label: FilterOptions.Bug as string,value:'',id:5, selected:false},
-  {label: FilterOptions.Feature as string,value:'',id:6, selected:false}
+  {label: FilterOptions.All as string,value:'all',id:1, selected:true},
+  {label: FilterOptions.UI as string,value:'ui',id:2, selected:false},
+  {label: FilterOptions.UX as string,value:'ux',id:3, selected:false},
+  {label: FilterOptions.Enhancement as string,value:'enhancement',id:4, selected:false},
+  {label: FilterOptions.Bug as string,value:'bug',id:5, selected:false},
+  {label: FilterOptions.Feature as string,value:'feature',id:6, selected:false}
 ];
 
 const updatedStatusMock = [
-  {label: RoadmapStatus.Suggestion as string,value:'',id:1, selected:true},
-  {label: RoadmapStatus.Planned as string,value:'',id:2, selected:false},
-  {label: RoadmapStatus.InProgress as string,value:'',id:3, selected:false},
-  {label: RoadmapStatus.Live as string,value:'',id:4, selected:false}
+  {label: RoadmapStatus.Suggestion as string,value:'suggestion',id:1, selected:true},
+  {label: RoadmapStatus.Planned as string,value:'planned',id:2, selected:false},
+  {label: RoadmapStatus.InProgress as string,value:'in-progress',id:3, selected:false},
+  {label: RoadmapStatus.Live as string,value:'live',id:4, selected:false}
 ];
 
 const EditFeedback:React.FC = () =>{
@@ -52,15 +52,14 @@ const EditFeedback:React.FC = () =>{
       if(feedbackRequest){
         const updateComment = {
           ...values,
-          category:selectedSort?.label.toLowerCase() ?? feedbackRequest.category.toLowerCase(),
-          status:selectedStatus?.label.toLowerCase() ?? feedbackRequest.status.toLowerCase(),
+          category:selectedSort ?? feedbackRequest.category,
+          status:selectedStatus?.toLowerCase() ?? feedbackRequest.status.toLowerCase(),
           upvotes:feedbackRequest.upvotes ?? 1,
           id:feedbackRequest.id, 
           ...(feedbackRequest.comments !== undefined && { comments: feedbackRequest.comments }),
         };
         if(id){
-          const _id = (+id - 1).toString();
-          updateSuggestion(_id,updateComment).then(()=>{
+          updateSuggestion(id,updateComment).then(()=>{
             navigate(-1);
           });
         }
@@ -74,7 +73,8 @@ const EditFeedback:React.FC = () =>{
   const [statusOpen,setStatusOpen] = useState(false);
   const [sortList, setSortList] = useState(labelsMock);
   const [statusList, setStatusList] = useState(updatedStatusMock);
-
+  const [selectedSort, setSelectedSort] = useState(labelsMock[0].label);
+  const [selectedStatus, setSelectedStatus] = useState(updatedStatusMock[0].label);
 
   const handleSortVisible = () => {
     setSortOpen(prevState=>!prevState);
@@ -86,41 +86,56 @@ const EditFeedback:React.FC = () =>{
 
   const handleClickOnSortItem = (updatedList: typeof sortList) => {
     setSortList(updatedList);
+    const selected = updatedList.find((item) => item.selected);
+    if(selected) setSelectedSort(selected?.label);
     setSortOpen(prevState=>!prevState);
   };
 
   const handleClickOnStatusItem = (updatedList: typeof statusList) => {
     setStatusList(updatedList);
+    const selected = updatedList.find((item) => item.selected);
+    if(selected) setSelectedStatus(selected?.label);
     setStatusOpen(prevState=>!prevState);
   };
 
   const handleDelete = () =>{
     if(id){
-      // fix id number
-      const _id = (+id - 1).toString();
-      deleteSuggestion(_id).then(()=>{
+      deleteSuggestion(id).then(()=>{
         navigate(-2);
       });
     }  
   };
 
   useEffect(() => {
-    const feedback = suggestions.find((item:Suggestions) => item.id.toString() === id);
-    if (feedback) {
-      setFeedbackRequest(feedback);
-      formik.resetForm({
-        values: {
-          title: feedback.title,
-          description: feedback.description,
-        },
-      });
-    } else {
-      console.error(`Feedback with ID ${id} not found in UserContext.`);
+    if(id && suggestions.length){
+      const feedback = suggestions.find((item:Suggestions) => item.id.toString() === id);
+      if (feedback) {
+        setFeedbackRequest(feedback);     
+    
+        formik.resetForm({
+          values: {
+            title: feedback.title,
+            description: feedback.description,
+          },
+        });
+      } else {
+        
+        console.error(`Feedback with ID ${id} not found in UserContext.`);
+      }
     }
+   
   }, [id, suggestions]);
 
-  const selectedSort: DropdownItem | undefined = sortList.find((item) => item.selected);
-  const selectedStatus: DropdownItem | undefined = statusList.find((item) => item.selected);
+  
+  useEffect(()=>{
+    if (feedbackRequest) {
+      const category = sortList.find((item)=>item.value===feedbackRequest.category.toLowerCase());
+      if(category) setSelectedSort(category.label);
+      const status = statusList.find((item)=>item.value===feedbackRequest.status.toLowerCase());
+      if(status) setSelectedStatus(status.label);
+    }  
+
+  },[feedbackRequest]);
 
   return(
     <section className={`${styles.editFeedbackContainer} thinContainer`}>
@@ -151,7 +166,7 @@ const EditFeedback:React.FC = () =>{
               <p className='p5'>Choose a category for your feedback</p>
               <div className='form-select-dropdown'>
                 <button type='button' className='form-select' onClick={handleSortVisible}>
-                  {selectedSort?.label}
+                  {selectedSort}
                 </button>
                 { sortOpen &&
               <Dropdown items={sortList} clickOnItem={handleClickOnSortItem}/>
@@ -163,7 +178,7 @@ const EditFeedback:React.FC = () =>{
               <p className='p5'>Change feedback state</p>
               <div className='form-select-dropdown'>
                 <button type='button' className='form-select' onClick={handleStatusVisible}>
-                  {selectedStatus?.label}
+                  {selectedStatus}
                 </button>
                 { statusOpen &&
               <Dropdown items={statusList} clickOnItem={handleClickOnStatusItem}/>
