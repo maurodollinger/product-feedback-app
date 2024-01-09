@@ -161,4 +161,4 @@ export enum LogMessages {
 }
 
 export type { User, Comment, Suggestions, SuggestionsContextProviderProps, SuggestionsContextProps, DropdownItem, SuggestionReducerProps,
-  ApiContextData, ApiContextProps, ApiContextValue, ApiType, AddSuggestion };
+  ApiContextData, ApiContextProps, ApiContextValue, ApiType, AddSuggestion, DatabaseUser };

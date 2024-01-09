@@ -1,7 +1,7 @@
 // ApiContext.js
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Api } from '../api/api' ;
-import { ApiContextData, ApiContextValue, AddSuggestion, LogMessages, Suggestions, ApiContextProps, User} from '../models/types';
+import { ApiContextData, ApiContextValue, AddSuggestion, LogMessages, Suggestions, ApiContextProps, User, DatabaseUser} from '../models/types';
 import Log from '../Components/UI/Log/Log';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -39,36 +39,43 @@ export const ApiProvider:React.FC<{children:React.ReactNode}> = ({ children }) =
   });
 
   useEffect(() => {
-    getData().then(()=>{
-      loginUser();
+    
+    let user:DatabaseUser;
+    loginUser().then((_user:any)=>{
+      user = _user;
+      getData().then(()=>{
+        const userLogged = ctxData.data.users.find((u)=>u.uid === user.uid);
+        if(userLogged){
+          const currentUser:User = {
+            name: userLogged.name,
+            username: userLogged.username,
+            image: userLogged.image,
+            upvotes: userLogged.upvotes
+          };
+          const currentCtxData = ctxData;
+  
+          const updatedData = {
+            ...currentCtxData.data,
+            currentUser: currentUser,
+          };
+          const updatedCtxData = {
+            ...currentCtxData,
+            data: updatedData,
+          };
+          setCtxData(updatedCtxData);
+          setLogState({ message: `${userLogged.name} ${LogMessages.Logged}`, logType:'success', visible: true });
+        }
+      });
     });
   }, []);
 
-  const loginUser = () =>{
-    Api.loginUser().then((user:any)=>{
-      const userId = user.uid;
-      const userLogged = ctxData.data.users.find((u)=>u.uid === userId);
-      if(userLogged){
-        const currentUser:User = {
-          name: userLogged.name,
-          username: userLogged.username,
-          image: userLogged.image,
-          upvotes: userLogged.upvotes
-        };
-        const currentCtxData = ctxData;
-
-        const updatedData = {
-          ...currentCtxData.data,
-          currentUser: currentUser,
-        };
-        const updatedCtxData = {
-          ...currentCtxData,
-          data: updatedData,
-        };
-        setCtxData(updatedCtxData);
-        setLogState({ message: `${userLogged.name} ${LogMessages.Logged}`, logType:'success', visible: true });
-      }
+  const loginUser = async () =>{
+    let user;
+    await Api.loginUser().then((_user)=>{
+      user = _user;
     });
+
+    return user;
   };
 
   const setAndCleanData = (result: ApiContextProps) =>{
