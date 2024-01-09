@@ -4,7 +4,8 @@
 
 body{
     font-family: 'Jost', sans-serif;
-    background-color:#F7F8FD;;
+    background-color:#F7F8FD;
+    overflow-y: scroll; 
 }
 
 h1, h2, h3, h4{
@@ -316,4 +317,17 @@ input,textarea,button{
     svg{
         width: 3rem;
     }
+}
+
+::-webkit-scrollbar {
+    width: 6px; 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #CFD7FF; 
+    border-radius: 6px; 
+}
+
+::-webkit-scrollbar-track {
+    background-color: #F7F8FD; 
 }
