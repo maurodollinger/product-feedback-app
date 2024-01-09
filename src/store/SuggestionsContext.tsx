@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { FilterOptions, RoadmapStatusLowcap, SortConstants, SuggestionReducerProps, Suggestions, SuggestionsContextProps, SuggestionsContextProviderProps } from '../models/types';
 import { useApi } from './ApiContext';
+import { ReactComponent as Loader} from '../assets/shared/loader.svg';
 
 const ActionTypes = {
   UPDATE_LEAST_UPVOTES: SortConstants.LeastUpvotes as string,
@@ -224,6 +225,10 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     <SuggestionsContext.Provider
       value={suggestionsCtx}>
       {!isLoading && props.children}
+      {isLoading && <div className='container loader'>
+        <Loader/>
+        <p>loading content...</p>
+      </div>}
     </SuggestionsContext.Provider>
   );
 };
