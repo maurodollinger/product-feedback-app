@@ -2,7 +2,8 @@
     "currentUser": {
       "image": "./assets/user-images/image-zena.jpg",
       "name": "Zena Kelley",
-      "username": "velvetround"
+      "username": "velvetround",
+      "upvotes":[]
     },
     "productRequests": [
       {
@@ -301,6 +302,14 @@
             ]
           }
         ]
+      }
+    ],
+    "users":[
+      {
+        "uid":"TzBbY1XBgpb94k8sGa4ClUDRW2C2",
+        "id":"velvetround@test.com",
+        "username":"velvetround",
+        "upvotes":[]
       }
     ]
   }

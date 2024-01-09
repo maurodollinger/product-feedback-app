@@ -3,6 +3,12 @@ interface User {
   image: string;
   name: string;
   username: string;
+  upvotes?: string[];
+}
+
+interface DatabaseUser extends User{
+  id:string;
+  uid:string;
 }
 
 interface Comment {
@@ -34,7 +40,7 @@ interface AddSuggestion{
 
 interface SuggestionsContextProviderProps {
   children: React.ReactNode;
-  currentUser: User;
+  //currentUser: User;
   ///suggestions: Suggestions[];
 }
 
@@ -76,6 +82,7 @@ interface RoadmapList {
 interface ApiContextProps {
   currentUser: User;
   suggestions: Suggestions[];
+  users:DatabaseUser[]
 }
 
 interface ApiContextData {
@@ -102,6 +109,7 @@ interface ApiType {
   upvoteSuggestion: (id: string) => Promise<void>;
   addComment: (id:string, newData:Comment) => Promise<void>;
   addReply: (idArray:string[], newData:Comment) => Promise<void>;
+  loginUser: () => Promise<any>;
   //listenAuthState: (callback: (user: User | null) => void) => void;
 }
 
@@ -148,7 +156,8 @@ export enum LogMessages {
   Edited = 'Suggestion edited successfully',
   Deleted = 'Suggestion removed successfully',
   Updated = 'Suggestion has been updated succesfully',
-  CommentAdded = 'Comment has been added succesfully'
+  CommentAdded = 'Comment has been added succesfully',
+  Logged = 'logged succesfully'
 }
 
 export type { User, Comment, Suggestions, SuggestionsContextProviderProps, SuggestionsContextProps, DropdownItem, SuggestionReducerProps,

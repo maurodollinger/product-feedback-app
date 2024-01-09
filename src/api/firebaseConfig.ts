@@ -1,6 +1,6 @@
 // Importa las funciones necesarias de los SDKs de Firebase
 import { initializeApp } from 'firebase/app';
-//import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getDatabase, ref, get, set,  runTransaction,  query, remove } from 'firebase/database';
 import { ApiType, ApiContextProps, AddSuggestion, Suggestions, Comment } from '../models/types';
 
@@ -16,7 +16,7 @@ const firebaseConfig = {
 
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
-//const auth = getAuth(app);
+const auth = getAuth(app);
 const db = getDatabase(app);
 
 const nodeSuggestions = 'productRequests';
@@ -29,6 +29,7 @@ export const firebaseApi: ApiType = {
     const data: ApiContextProps = {
       currentUser: snapshot.child('currentUser').val(),
       suggestions: snapshot.child('productRequests').val(),
+      users: snapshot.child('users').val()
     };
     
     return data;
@@ -42,7 +43,6 @@ export const firebaseApi: ApiType = {
   getNodeById: async (id: string, path = '') => {
     const dataRef = query(ref(db, `${nodeSuggestions}${path}`));
     const querySnapshot = await get(dataRef);
-    // console.log(`${nodeSuggestions}${path}`);
     let result = '';
 
     querySnapshot.forEach((childSnapshot) => {
@@ -119,6 +119,23 @@ export const firebaseApi: ApiType = {
     }
     catch (error) {
       throw Error;
+    }
+  },
+
+  loginUser: async () =>{
+    try{
+      const user = 'velvetround@test.com';
+      const pass = 'superpass';
+      const data = await signInWithEmailAndPassword(auth,user,pass).then((userCredential)=>{
+        return userCredential.user.providerData[0];
+      }).catch((error)=>{
+        console.log(error);
+      });
+      return data;
+    }
+    catch(error){
+      console.log(error);
+      // throw Error;
     }
   }
   /*

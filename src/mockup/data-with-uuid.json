@@ -2,7 +2,8 @@
     "currentUser": {
       "image": "./assets/user-images/image-zena.jpg",
       "name": "Zena Kelley",
-      "username": "velvetround"
+      "username": "velvetround",
+      "upvotes":[]
     },
     "productRequests": [
         {
@@ -322,7 +323,7 @@
                   {
                     "id": "a1b2c3d4-0123-4567-89ab-cdef12345678",
                     "content": "Me too! I'd also love to see celebrations at specific points as well. It would help people take a moment to celebrate their achievements!",
-                    "replyingTo": "a4b3c2d1-d123-4b56-a78c-9d0e1f2a3b4c",
+                    "replyingTo": "arlen_the_marlin",
                     "user": {
                       "image": "./assets/user-images/image-suzanne.jpg",
                       "name": "Suzanne Chang",
@@ -333,5 +334,15 @@
               }
             ]
           }          
+    ],
+    "users":[
+      {
+        "id":"TzBbY1XBgpb94k8sGa4ClUDRW2C2",
+        "uid":"velvetround@test.com",
+        "image": "./assets/user-images/image-zena.jpg",
+        "name": "Zena Kelley",
+        "username":"velvetround",
+        "upvotes":["b1c23a0d-8bb2-415a-aa8a-3b2fc16416e3"]
+      }
     ]
   }

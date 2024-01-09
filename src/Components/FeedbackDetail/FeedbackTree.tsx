@@ -53,7 +53,9 @@ const FeedbackTree:React.FC<Props> = ({comments, firstBranch,idArray}) =>{
           validationSchema={validationSchema}
           onSubmit={(values) => {
             const newArray = [...idArray,values.commentId];
-            addReply(newArray,values.description,values.replyingTo);
+            addReply(newArray,values.description,values.replyingTo).then(()=>{
+              handleRemoveReply(id);
+            });
           }}
         >
           {(formik) => (
@@ -84,6 +86,10 @@ const FeedbackTree:React.FC<Props> = ({comments, firstBranch,idArray}) =>{
     setActiveReplies((prevState) => [...prevState, id]);
   };
 
+  const handleRemoveReply = (idToRemove: string): void => {
+    setActiveReplies((prevState) => prevState.filter((id) => id !== idToRemove));
+  };
+
   useEffect(() => {
     if (lastCommentRef.current) {
       const feedbackCommentElement = lastCommentRef.current.querySelector('.feedbackComment:last-child');
@@ -101,9 +107,10 @@ const FeedbackTree:React.FC<Props> = ({comments, firstBranch,idArray}) =>{
             key={(comment.id) ? comment.id : index} 
             className={styles.feedbackCommentContainer} 
             ref={isLastComment ? lastCommentRef : null}>
-            <FeedbackComment className={`${(firstBranch && !comment.replies && !isLastComment) ? styles.borderBottom : ''} 
-            ${(isLastComment) ? 'feedbackComment' : ''}`} comment={comment}
-            openReply={handleReplies}
+            <FeedbackComment 
+              className={`${(firstBranch && !comment.replies && !isLastComment) ? styles.borderBottom : ''} ${(isLastComment) ? 'feedbackComment' : ''}`} 
+              comment={comment}
+              openReply={handleReplies}
             >
               {
                 renderAddComment(comment.id,comment.user.username)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Card from '../UI/Card/Card';
 import Counter from '../UI/Counter/Counter';
 import { FilterOptions, Suggestions } from '../../models/types';
@@ -6,6 +6,7 @@ import styles from './Suggestion.module.scss';
 import { ReactComponent as IconComments } from '../../assets/shared/icon-comments.svg';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../../store/ApiContext';
+import { SuggestionsContext } from '../../store/SuggestionsContext';
 
 type Props = {
   request:Suggestions,
@@ -17,8 +18,17 @@ const SuggestionItem:React.FC<Props> = ({request, isClickable=true}) =>{
   const [isUpvoted, setIsUpvoted] = useState(false);
   const [currentUpvotes, setCurrentUpvotes] = useState(request.upvotes);
 
+  const { currentUser } = useContext(SuggestionsContext);
+
   const navigate = useNavigate();
   const { upvoteSuggestion} = useApi();
+
+  useEffect(() => 
+  {    
+    const upvotes = currentUser.upvotes;
+    const isAlreadyUpvoted = upvotes ? upvotes.includes(request.id) : false;
+    setIsUpvoted(isAlreadyUpvoted);
+  }, [currentUser.upvotes, request.id]);
 
   useEffect(() => {
     setCurrentUpvotes(request.upvotes);
@@ -38,8 +48,10 @@ const SuggestionItem:React.FC<Props> = ({request, isClickable=true}) =>{
 
   const handleCounterClick = (event: React.MouseEvent) => {
     event.stopPropagation(); 
-    upvoteSuggestion(request.id.toString());
-    setIsUpvoted(true);
+    if(!isUpvoted){
+      upvoteSuggestion(request.id.toString());
+      setIsUpvoted(true);
+    }   
   };
 
   const getCategoryLabel = (category: string): string => {

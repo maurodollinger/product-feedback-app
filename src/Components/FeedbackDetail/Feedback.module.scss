@@ -6,6 +6,22 @@
     .container {
 
         display: flex;
+     
+        @media screen and (max-width:$mobile-width-double){
+            flex-direction: column;
+            position: relative;
+            >.commentContain {
+                > div{
+                    position: absolute!important;
+                    top:0;
+                    left:3.5rem;
+                    width: calc(100% - 3.5rem)!important;
+                }
+                >p{
+                    margin-top: 1rem;
+                }
+            }
+        }
 
         >div:first-child {
             img {
@@ -66,6 +82,10 @@
     @media screen and (max-width:$tablet-width) {
         margin: 3.5rem 0;
         padding: 0 3rem;
+    }
+    @media screen and (max-width:$mobile-width-double) {
+        margin: 1.5rem 0;
+        padding: 0 1.5rem;
     }
     >div:first-child {
         display: flex;
@@ -163,5 +183,20 @@
     button {
         max-width: 7.3125rem;
         margin-top: 1.5rem;
+    }
+    @media screen and (max-width:$mobile-width-double){
+        >form{
+            margin-left: 0;
+            flex-direction: column;
+        }
+        div:last-child{
+            margin-left: 0;
+            margin-top: 0rem;
+        }
+        button{
+            margin-top: 0;
+            width: 100%;
+            max-width: none;
+        }
     }
 }

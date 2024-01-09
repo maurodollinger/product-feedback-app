@@ -1,7 +1,7 @@
 // ApiContext.js
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Api } from '../api/api' ;
-import { ApiContextData, ApiContextValue, AddSuggestion, LogMessages, Suggestions, ApiContextProps} from '../models/types';
+import { ApiContextData, ApiContextValue, AddSuggestion, LogMessages, Suggestions, ApiContextProps, User} from '../models/types';
 import Log from '../Components/UI/Log/Log';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,11 +9,13 @@ const initialApiContext: ApiContextValue = {
   context:{
     data:{
       currentUser:{
-        image:'',
-        name:'',
-        username:''
+        image:'./assets/user-images/image-zena.jpg',
+        name:'Zena Kelley',
+        username:'velvetround',
+        upvotes:[]
       },
       suggestions:[],
+      users:[]
     },
     isLoading: true,
   },
@@ -37,14 +39,78 @@ export const ApiProvider:React.FC<{children:React.ReactNode}> = ({ children }) =
   });
 
   useEffect(() => {
-    getData();
+    getData().then(()=>{
+      loginUser();
+    });
   }, []);
 
+  const loginUser = () =>{
+    Api.loginUser().then((user:any)=>{
+      const userId = user.uid;
+      const userLogged = ctxData.data.users.find((u)=>u.uid === userId);
+      if(userLogged){
+        const currentUser:User = {
+          name: userLogged.name,
+          username: userLogged.username,
+          image: userLogged.image,
+          upvotes: userLogged.upvotes
+        };
+        const currentCtxData = ctxData;
+
+        const updatedData = {
+          ...currentCtxData.data,
+          currentUser: currentUser,
+        };
+        const updatedCtxData = {
+          ...currentCtxData,
+          data: updatedData,
+        };
+        setCtxData(updatedCtxData);
+        setLogState({ message: `${userLogged.name} ${LogMessages.Logged}`, logType:'success', visible: true });
+      }
+    });
+  };
+
   const setAndCleanData = (result: ApiContextProps) =>{
+    // console.log(ctxData,'before');
     const cleanSuggestions = Object.values(result.suggestions).filter(item => item !== undefined);
     const cleanData = {...result,suggestions:cleanSuggestions};
-    setCtxData({data:cleanData,isLoading:false});
+
+    const updatedCtxData = {
+      data: {
+        ...cleanData,
+        currentUser: {
+          ...ctxData.data.currentUser,
+        },
+      },
+      isLoading: false,
+    };
+    setCtxData(updatedCtxData);
   };
+
+  const setUserUpvote = (id:string,result:ApiContextProps) => {
+    const currentCtxData = ctxData;
+  
+    const updatedUser = {
+      ...currentCtxData.data.currentUser,
+      upvotes: (currentCtxData.data.currentUser.upvotes || []).concat(id),
+    };
+    const cleanSuggestions = Object.values(result.suggestions).filter(item => item !== undefined);
+
+    const updatedData = {
+      ...currentCtxData.data,
+      currentUser: updatedUser,
+      suggestions:cleanSuggestions
+    };
+  
+    const updatedCtxData = {
+      ...currentCtxData,
+      data: updatedData,
+    };
+    //console.log(updatedCtxData);
+    setCtxData(updatedCtxData);
+  };
+   
 
   const getData = async () =>{
     await Api.getData().then((result) => {
@@ -54,7 +120,6 @@ export const ApiProvider:React.FC<{children:React.ReactNode}> = ({ children }) =
 
   const addSuggestion = async (data: AddSuggestion) => {
     try{
-      //setCtxData((prevData) => ({ ...prevData, isLoading: true }));
       const newData = {
         ...data,
         id:uuidv4(),      
@@ -76,7 +141,6 @@ export const ApiProvider:React.FC<{children:React.ReactNode}> = ({ children }) =
 
   const deleteSuggestion = async (id:string) => {
     try{
-      //setCtxData((prevData) => ({ ...prevData, isLoading: true }));
       await Api.deleteSuggestion(id).then(()=>{
         Api.getData().then((result)=>{
           setAndCleanData(result);
@@ -110,8 +174,10 @@ export const ApiProvider:React.FC<{children:React.ReactNode}> = ({ children }) =
   const upvoteSuggestion = async (id:string) =>{
     try{
       await Api.upvoteSuggestion(id).then(()=>{
+        
         Api.getData().then((result)=>{
-          setAndCleanData(result);
+          setUserUpvote(id,result);
+          //setAndCleanData(result);
           setLogState({ message: LogMessages.Updated, logType:'success', visible: true });
         });
       }).catch(()=>{

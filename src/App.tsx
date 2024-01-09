@@ -4,7 +4,7 @@ import Suggestions from './Components/Suggestions/Suggestions';
 import Roadmap from './Components/Roadmap/Roadmap';
 //import data from './mockup/empty.json';
 //import data from './mockup/data.json';
-import data from './mockup/data-with-ids.json';
+//import data from './mockup/data-with-ids.json';
 import { SuggestionsContextProvider } from './store/SuggestionsContext';
 import FeedbackDetail from './Components/FeedbackDetail/FeedbackDetail';
 import './scss/main.scss';
@@ -32,7 +32,7 @@ function Layout(){
   return (
     <section>
       <ApiProvider>
-        <SuggestionsContextProvider currentUser={data.currentUser} >
+        <SuggestionsContextProvider>
           <Outlet />
         </SuggestionsContextProvider>
       </ApiProvider>

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { FilterOptions, RoadmapStatusLowcap, SortConstants, SuggestionReducerProps, Suggestions, SuggestionsContextProps, SuggestionsContextProviderProps } from '../models/types';
 import { useApi } from './ApiContext';
 
@@ -17,6 +17,7 @@ const initialUserContextValues: SuggestionsContextProps = {
     image: '',
     name: '',
     username: '',
+    upvotes:[]
   },
   suggestions: [],
   originalSuggestions:[],
@@ -112,6 +113,7 @@ const suggestionsPropsMock: SuggestionReducerProps = {
 export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps> = (props) =>{
   const { context } = useApi();
   const { data, isLoading} = context ;
+
   const localStorageData = JSON.parse(localStorage.getItem('product-feedback-app') || 'null');
 
   const storedSuggestionWithLocalStorage : SuggestionReducerProps = {
@@ -121,7 +123,32 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
     suggestions: suggestionsPropsMock.suggestions,
     originalSuggestions:  suggestionsPropsMock.originalSuggestions,
   };
-  
+
+  const [currentUser, setCurrentUser] = useState(localStorageData?.currentUser || initialUserContextValues.currentUser);
+
+  useEffect(()=>{
+    if (context.data.currentUser.upvotes && context.data.currentUser.upvotes.length !== 0) {
+      const mergedUpvotes = Array.from(
+        new Set([...currentUser.upvotes, ...context.data.currentUser.upvotes ])
+      );
+      if(currentUser.name !== ''){
+        setCurrentUser((prevUser:any) => ({
+          ...prevUser,
+          upvotes: mergedUpvotes,
+        }));
+      } else{
+        const newUser = {
+          ...context.data.currentUser,
+          upvotes:mergedUpvotes
+        };
+        setCurrentUser(newUser);
+      }
+      
+    } 
+  },[context.data.currentUser,]);
+
+  //const currentUser = localStorageData?.currentUser || data.currentUser;
+
   const [suggestionsState, dispatchSuggestionsAction] = useReducer(
     suggestionsReducer as React.Reducer<SuggestionReducerProps, Action>,storedSuggestionWithLocalStorage
   );  
@@ -170,13 +197,16 @@ export const SuggestionsContextProvider:React.FC<SuggestionsContextProviderProps
   useEffect(()=>{
     const storage = {
       currentSort:suggestionsState.currentSort,
-      currentCategory:suggestionsState.currentCategory
+      currentCategory:suggestionsState.currentCategory,
+      currentUser:currentUser
     };
     localStorage.setItem('product-feedback-app',JSON.stringify(storage));
   },[suggestionsState]);
 
+
+
   const suggestionsCtx = {
-    currentUser:props.currentUser,
+    currentUser:currentUser,
     suggestions:suggestionsState.suggestions,
     originalSuggestions:suggestionsState.originalSuggestions,
     roadmapList:suggestionsState.roadmapList,
