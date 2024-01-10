@@ -10,6 +10,7 @@ import { ReactComponent as PlusIcon } from '../../assets/shared/icon-plus.svg';
 import Button from '../UI/Button/Button';
 import { FilterOptions } from '../../models/types';
 import { useNavigate } from 'react-router-dom';
+import { ReactComponent as Loader} from '../../assets/shared/loader.svg';
 
 const labelsMock = [
   {value: FilterOptions.All,id:1, selected:true},
@@ -19,6 +20,8 @@ const labelsMock = [
   {value: FilterOptions.Bug,id:5, selected:false},
   {value: FilterOptions.Feature,id:6, selected:false}
 ];
+const PAGE_SIZE = 6; 
+const SCROLL_THRESHOLD = 300;
 
 export const EmptySuggestions = () =>{
   const navigate = useNavigate();
@@ -40,6 +43,9 @@ const Suggestions:React.FC = () => {
   const [categories, setCategories] = useState(labelsMock);
   const [isBarMobileActive, setIsBarMobileActive] = useState(false);
   const navigate = useNavigate();
+  const [loadedSuggestions, setLoadedSuggestions] = useState<any>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTag = (id:number,label:string) =>{
     updateByCategory(label.toLowerCase());
@@ -47,6 +53,8 @@ const Suggestions:React.FC = () => {
       l.id === id ? { ...l, selected: true } : { ...l, selected: false }
     );
     setCategories(updatedCategories);
+    setLoadedSuggestions([]);
+    setCurrentPage(1);
   };
 
   const handleMobileBar = (isActive:boolean) =>{
@@ -85,9 +93,51 @@ const Suggestions:React.FC = () => {
         l.value.toLowerCase() === currentCategory.toLowerCase() ? { ...l, selected: true } : { ...l, selected: false }
       );
       setCategories(updatedCategories);
+      setLoadedSuggestions([]);
+      setCurrentPage(1); 
     }   
   },
   [currentCategory]);
+
+  useEffect(() => {
+    loadMoreSuggestions();
+  }, [suggestions]);
+
+  const loadMoreSuggestions = async (wait = false) => {
+   
+    if(wait) await new Promise((resolve) => setTimeout(resolve, 250));
+
+    const start = (currentPage -1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    const newLoadedSuggestions = suggestions.slice(0, end);
+    setLoadedSuggestions(newLoadedSuggestions);
+    setIsLoading(false);
+  };
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + window.scrollY + SCROLL_THRESHOLD >= document.body.offsetHeight &&
+      suggestions.length > loadedSuggestions.length &&
+      !isLoading
+    ) {
+      setIsLoading(true);
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {    
+
+    window.addEventListener('scroll', handleScroll);
+
+    if (isLoading) {
+      loadMoreSuggestions(true);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [currentPage, suggestions, isLoading]);
+
 
   return (
     <div className={`container ${styles.suggestionsContainer}`}>
@@ -111,14 +161,11 @@ const Suggestions:React.FC = () => {
       <section className={styles.suggestions}>
         <SuggestionHeader length={suggestions.length}/>
         {
-          suggestions.length === 0 ? <EmptySuggestions/> 
+          loadedSuggestions.length === 0 ? <EmptySuggestions/> 
             :
             <div className={styles.requestsContainer}>      
-              {
-                suggestions.map((pr)=>(
-                  pr && <SuggestionItem request={pr} key={pr.id}/>
-                ))
-              }
+              {loadedSuggestions.map((pr: any) => pr && <SuggestionItem request={pr} key={pr.id} />)}
+              {isLoading && <div className='loader'><Loader/></div>}
             </div>
         }
       </section>
